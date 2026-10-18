@@ -205,6 +205,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border:1px solid var(
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .tag{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:var(--sunken);border-radius:6px;padding:4px 8px}
 .spec p{font-size:15px;line-height:1.65;color:var(--muted)}
+.spec summary > p{flex-grow:1}
 .more{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--clay-deep)}
 .more .sign{
   width:22px;height:22px;border:1px solid var(--rule);border-radius:50%;
@@ -565,6 +566,30 @@ body.editing a{cursor:text}
   }
   if(track){ fill(); }
 
+  /* ---- keep the closed project cards the same height ----
+     align-items:start keeps an open card from stretching its neighbours,
+     which leaves each card at its own content height. Levelling the
+     summaries puts the uniformity back without that side effect. */
+  var summaries = Array.prototype.slice.call(document.querySelectorAll(".spec summary"));
+  var levelPending = null;
+  function levelCards(){
+    if(!summaries.length){ return; }
+    for(var i=0;i<summaries.length;i++){ summaries[i].style.minHeight = ""; }
+    var tallest = 0;
+    for(i=0;i<summaries.length;i++){
+      var h = summaries[i].getBoundingClientRect().height;
+      if(h > tallest){ tallest = h; }
+    }
+    for(i=0;i<summaries.length;i++){ summaries[i].style.minHeight = tallest + "px"; }
+  }
+  function levelSoon(){
+    if(levelPending){ clearTimeout(levelPending); }
+    levelPending = setTimeout(levelCards, 80);
+  }
+  levelCards();
+  window.addEventListener("resize", levelSoon);
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(levelCards); }
+
   /* ---- toast helper ---- */
   var toast = document.getElementById("toast"), tid = null;
   function say(text){
@@ -608,6 +633,7 @@ body.editing a{cursor:text}
       if(on){ el.setAttribute("contenteditable","plaintext-only"); }
       else { el.removeAttribute("contenteditable"); }
     });
+    if(!on){ levelSoon(); }
     edToggle.hidden = on;
     edSave.hidden = !on;
     edCancel.hidden = !on;
