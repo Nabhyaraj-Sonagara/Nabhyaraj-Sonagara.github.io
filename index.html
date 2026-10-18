@@ -7,9 +7,10 @@
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
+
 <title>Nabhyaraj</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
 <style>
 /* Layout concept: a physics lab notebook — ruled ground, specimen cards, measured margin labels, one live instrument in the hero. */
 :root{
@@ -97,7 +98,6 @@ header{
   font-family:var(--display);font-size:20px;font-weight:600;letter-spacing:-.02em;color:var(--ink);
   background:none;border:0;padding:6px 8px;margin-left:-8px;cursor:pointer;line-height:1;
 }
-.mark b{color:var(--clay-deep);font-weight:600}
 nav{margin-left:auto;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
 nav a{
@@ -138,7 +138,9 @@ h1 em svg{position:absolute;left:0;bottom:-.01em;width:100%;height:.12em;overflo
   border:1px solid var(--rule);border-radius:14px;background:var(--raised);
   padding:18px;display:flex;flex-direction:column;gap:16px;
 }
-.inst-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.inst-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:nowrap}
+.inst-head .lab:first-child{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inst-head .lab:last-child{flex:0 0 auto;white-space:nowrap}
 .bars{
   display:flex;align-items:center;gap:2px;height:120px;padding:10px 12px;
   background:var(--sunken);border:1px solid var(--hairline);border-radius:10px;
@@ -147,7 +149,8 @@ h1 em svg{position:absolute;left:0;bottom:-.01em;width:100%;height:.12em;overflo
 .qbar.neg{background:var(--blue)}
 .readout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .cell{background:var(--sunken);border:1px solid var(--hairline);border-radius:10px;padding:10px 12px;min-width:0}
-.cell .v{font-family:var(--mono);font-size:clamp(17px,2.1vw,22px);font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2;display:block}
+@media (max-width:460px){.cell{padding:8px 9px}.readout{gap:7px}}
+.cell .v{font-family:var(--mono);font-size:clamp(15px,2.1vw,22px);font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2;display:block;white-space:nowrap}
 input[type=range]{
   -webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;margin:0;cursor:grab;
 }
@@ -158,7 +161,7 @@ input[type=range]::-webkit-slider-thumb{
 }
 input[type=range]::-moz-range-track{height:8px;border-radius:6px;background:var(--sunken);border:1px solid var(--rule)}
 input[type=range]::-moz-range-thumb{width:26px;height:26px;border:1px solid var(--clay-deep);border-radius:50%;background:var(--clay)}
-.verdict{font-size:14.5px;line-height:1.6;color:var(--muted);min-height:3.2em}
+.verdict{font-size:14.5px;line-height:1.6;color:var(--muted);height:70px;overflow:hidden;margin:0}
 .verdict b{color:var(--ink)}
 .verdict.warn b{color:var(--amber)}
 
@@ -276,7 +279,7 @@ body.editing a{cursor:text}
 
 <header>
   <div class="wrap bar">
-    <button class="mark" id="markBtn" aria-pressed="false" title="Show the layout grid">Nabhyaraj<b>.</b></button>
+    <button class="mark" id="markBtn" aria-pressed="false" title="Show the layout grid">Nabhyaraj</button>
     <nav aria-label="Sections">
       <a href="#work">Work</a>
       <a href="#research">Research</a>
@@ -297,8 +300,8 @@ body.editing a{cursor:text}
     </div>
     <div class="hero-grid">
       <div class="hero-copy">
-        <h1>I build <em>small models<svg viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8 C 48 2, 96 11, 148 6 S 252 2, 298 7" fill="none" stroke="#d97757" stroke-width="3" stroke-linecap="round"/></svg></em> and sharp tools.</h1>
-        <p class="lede">I am a student of AI, physics and mathematics, heading for work as an experimental physicist and AI researcher. I write machine learning from scratch so that I understand it, then turn what I learn into tools I use every day.</p>
+        <h1>I build <em>small models<svg viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8 C 48 2, 96 11, 148 6 S 252 2, 298 7" fill="none" stroke="#d97757" stroke-width="3" stroke-linecap="round"></path></svg></em> and sharp tools.</h1>
+        <p class="lede">I am a student of AI, physics and mathematics, heading for work as an experimental physicist and AI researcher. I write artificial neural networks and decode the world with a team of AI agents, one step at a time.</p>
         <div class="cta">
           <a class="btn btn-primary" href="#work">See the work</a>
           <a class="btn btn-ghost" href="#contact">Get in touch</a>
@@ -366,7 +369,7 @@ body.editing a{cursor:text}
           <span class="sticker">Prize winner</span>
           <div class="tags"><span class="tag">Agents</span><span class="tag">Voice</span><span class="tag">Obsidian</span></div>
           <h3>Multi-agent study system</h3>
-          <p>Four agents that share one job: capture notes by voice, quiz me on them, find the topics I have not covered, and turn a lecture into a study guide. Built in one sitting for the Multi-App AI Agent Hackathon, where it won a prize.</p>
+          <p>Four agents that share one job: capture notes by voice, quiz me on them, find the topics I have not covered, and turn a lecture into a study guide. Built in one sitting for a Multi-App AI Agent Hackathon, where it got an honorable mention.</p>
           <span class="more">Read the write-up <span class="sign" aria-hidden="true">+</span></span>
         </summary>
         <div class="body-in">
@@ -449,7 +452,7 @@ body.editing a{cursor:text}
     </div>
     <div class="about">
       <div>
-        <p class="prose" style="margin-bottom:18px"><strong>Quantization-aware reasoning distillation.</strong> I am writing an independent paper on a problem I keep running into: when a reasoning model is pushed to low bit-widths, it misjudges how long to think. Its chain of thought becomes miscalibrated — too short on the problems that need the steps, too long on the ones that do not. Drafting began in September 2026, and the instrument in the hero is the same trade-off, made draggable.</p>
+        <p class="prose" style="margin-bottom:18px">Quantization-aware reasoning distillation. I am writing an independent paper on a problem I keep running into: when a reasoning model is pushed to low bit-widths, it misjudges how long to think. Its chain of thought becomes miscalibrated — too short on the problems that need the steps, too long on the ones that do not.</p>
         <div class="rows">
           <a class="row u" href="https://substack.com/@nabhyaraj">
             <span class="lab">Oct 2026</span>
@@ -482,12 +485,12 @@ body.editing a{cursor:text}
     <div class="rows">
       <div class="row">
         <span class="lab">Oct 2026</span>
-        <span><span class="t">Writing on Substack</span><br><span class="d">An essay on whether the world is getting uglier, built around design and the city I live in.</span></span>
+        <span><span class="t">Writing on Substack</span><br><span class="d">A frank commentary on life, the universe and everything.</span></span>
         <span class="lab">Writing</span>
       </div>
       <div class="row">
         <span class="lab">Sept 2026</span>
-        <span><span class="t">Won a prize at the Multi-App AI Agent Hackathon</span><br><span class="d">A four-agent study system, built in one sitting. I do not recommend the sleep schedule.</span></span>
+        <span><span class="t">Won a prize at the Multi-App AI Agent Hackathon</span><br><span class="d">A four-agent study system, built in one sitting.</span></span>
         <span class="lab">Build</span>
       </div>
       <div class="row">
@@ -497,7 +500,7 @@ body.editing a{cursor:text}
       </div>
       <div class="row">
         <span class="lab">Aug 2026</span>
-        <span><span class="t">Built a reference vault for my agents</span><br><span class="d">One brief they read before they answer, so context stops being something I retype.</span></span>
+        <span><span class="t">Built a reference vault for my agents</span><br><span class="d">One brief they read before they answer, so context isn't something to think about</span></span>
         <span class="lab">Build</span>
       </div>
     </div>
@@ -509,15 +512,15 @@ body.editing a{cursor:text}
     <div class="shead"><h2>About</h2><span class="lab">The short version</span></div>
     <div class="about">
       <div style="display:flex;flex-direction:column;gap:18px">
-        <p class="prose">I learn by rebuilding. If something looks like magic — attention, quantization, an optimiser that simply works — I write the smallest honest version of it in plain Python and watch where it breaks. That habit began as curiosity about transformers. It has turned into a model with no framework under it, a study system that runs on agents, and a paper nobody assigned me.</p>
-        <p class="prose">Physics is the other half. I want to work as an experimental physicist as well as an AI researcher, because the instruments and the models are the same problem seen twice: you build something small and careful, then find out which of your assumptions it was hiding.</p>
-        <p class="prose">Away from the screen I think about design. I am interested in interior design and want to work at a firm before I start one. I also play score-chasing roguelike deckbuilders, which is where I learned that constraints are what make a thing interesting.</p>
+        <p class="prose">I learn by rebuilding. If something looks like magic — I write the smallest honest version of it in plain Python and watch where it breaks. That habit began as curiosity about transformers. It has turned into a model with no framework under it, a study system that runs on agents, and a paper nobody assigned me.</p>
+        <p class="prose">Physics is the other half. I want to work in AI applications in experimental physics; to make physics more efficient and accessible than ever before.</p>
+        <p class="prose">Away from the screen I think about design and want to work at a design firm to make an impact. I also play score-chasing deckbuilders, which is where I learned that constraints are what make a thing interesting.</p>
       </div>
       <div class="aside">
         <span class="lab">Tools I use</span>
         <p>Python · NumPy · C++ (learning) · Git · Obsidian · AI agents</p>
         <span class="lab">Ask me about</span>
-        <p>Tokenisers, low-bit inference, and why your deck needs one more joker.</p>
+        <p>Tokenizers, low-bit inference, and why reading a book about a 3000 year-old worm-man will change you.</p>
       </div>
     </div>
   </div>
@@ -556,13 +559,13 @@ body.editing a{cursor:text}
   </div>
 </footer>
 
-<div class="toast" id="toast" hidden>Layout grid on. Click the name again to hide it.</div>
+<div class="toast" id="toast" hidden="">Layout grid on. Click the name again to hide it.</div>
 
-<div class="editbar" id="editbar" hidden>
+<div class="editbar" id="editbar" hidden="">
   <span class="lab" id="edStatus">Write-ups</span>
   <button class="btn" id="edToggle">Edit</button>
-  <button class="btn btn-primary" id="edSave" hidden>Save</button>
-  <button class="btn" id="edCancel" hidden>Cancel</button>
+  <button class="btn btn-primary" id="edSave" hidden="">Save</button>
+  <button class="btn" id="edCancel" hidden="">Cancel</button>
 </div>
 
 <script>
@@ -619,12 +622,12 @@ body.editing a{cursor:text}
     } else if(bits >= 9){
       msg = "<b>Half the size, no visible cost.</b> This is the easy win everyone takes.";
     } else if(bits >= 5){
-      msg = "<b>Fits on a Raspberry Pi.</b> The curve is now made of steps, and the model starts guessing between them.";
+      msg = "<b>Fits on a Raspberry Pi.</b> The curve is steps now, and the model guesses between them.";
     } else if(bits === 4){
-      msg = "<b>Fits on a microcontroller.</b> Four bits is the useful edge, and it is where my research starts.";
+      msg = "<b>Fits on a microcontroller.</b> Four bits is the useful edge, and where my research starts.";
       warn = true;
     } else {
-      msg = "<b>Too far.</b> Below four bits a reasoning model misjudges how long to think: too few steps on the hard problems, too many on the easy ones. That miscalibration is what my paper is about.";
+      msg = "<b>Too far.</b> The model now misjudges how long to think. That miscalibration is what my paper is about.";
       warn = true;
     }
     verdict.innerHTML = msg;
@@ -777,6 +780,5 @@ body.editing a{cursor:text}
   });
 })();
 </script>
-
 </body>
 </html>
