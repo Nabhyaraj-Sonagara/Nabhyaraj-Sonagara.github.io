@@ -470,6 +470,11 @@ body.editing a{cursor:text}
       <div>
         <p class="prose" style="margin-bottom:18px">Quantization-aware reasoning distillation. I am writing an independent paper on a problem I keep running into: when a reasoning model is pushed to low bit-widths, it misjudges how long to think. Its chain of thought becomes miscalibrated — too short on the problems that need the steps, too long on the ones that do not.</p>
         <div class="rows">
+          <a class="row u" href="https://nabhyaraj-sonagara.github.io/quantization-aware-reasoning-distillation/">
+            <span class="lab">In progress</span>
+            <span><span class="t">Quantization-aware reasoning distillation</span><br><span class="d">The working record of the paper: the question, why it is worth asking, and what is still open.</span></span>
+            <span class="lab">Paper</span>
+          </a>
           <a class="row u" href="https://substack.com/@nabhyaraj">
             <span class="lab">Oct 2026</span>
             <span><span class="t">Is the world getting uglier?</span><br><span class="d">An essay on design and aesthetics, written from Ahmedabad. On Substack.</span></span>
@@ -685,7 +690,7 @@ body.editing a{cursor:text}
       }
     }
   }
-  fill();
+  if(track){ fill(); }
 
   /* ---- toast helper ---- */
   var toast = document.getElementById("toast"), tid = null;
@@ -698,11 +703,11 @@ body.editing a{cursor:text}
 
   /* ---- layout grid toggle (the designer's easter egg) ---- */
   var markBtn = document.getElementById("markBtn");
-  markBtn.addEventListener("click", function(){
+  if(markBtn){ markBtn.addEventListener("click", function(){
     var on = document.body.classList.toggle("grid-on");
     markBtn.setAttribute("aria-pressed", on ? "true" : "false");
     say(on ? "Layout grid on. 40px rows, same as the type." : "Layout grid off.");
-  });
+  }); }
 
   /* ---- copy the address ---- */
   var copyBtn = document.getElementById("copyBtn");
@@ -712,6 +717,7 @@ body.editing a{cursor:text}
   var liveEd = Array.prototype.slice.call(document.querySelectorAll(EDSEL));
   var ART = null, dirty = false;
   var editbar = document.getElementById("editbar");
+  var hasEditor = !!editbar;
   var edToggle = document.getElementById("edToggle");
   var edSave = document.getElementById("edSave");
   var edCancel = document.getElementById("edCancel");
@@ -762,6 +768,7 @@ body.editing a{cursor:text}
     return "<!doctype html><html><head>" + HEAD_SNAPSHOT + "</head><body>" + holder.innerHTML + "</body></html>";
   }
 
+  if(hasEditor){
   edToggle.addEventListener("click", function(){ setEditing(true); });
   edCancel.addEventListener("click", function(){
     liveEd.forEach(function(el,i){ if(norm(el) !== ORIGINAL[i]){ el.textContent = ORIGINAL[i]; } });
@@ -794,6 +801,7 @@ body.editing a{cursor:text}
       ART = a;
       editbar.hidden = false;
     }, function(){});
+  }
   }
 
   copyBtn.addEventListener("click", function(){
