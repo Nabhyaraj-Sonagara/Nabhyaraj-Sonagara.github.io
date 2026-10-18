@@ -160,7 +160,8 @@ h1 em svg{position:absolute;left:0;bottom:-.01em;width:100%;height:.12em;overflo
 .qbar{flex:1 1 0;min-width:0;border-radius:2px;background:var(--clay);transition:height 160ms ease-out,background-color 160ms ease-out}
 .qbar.neg{background:var(--blue)}
 .readout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.cell{background:var(--sunken);border:1px solid var(--hairline);border-radius:10px;padding:10px 12px;min-width:0}
+.cell{background:var(--sunken);border:1px solid var(--hairline);border-radius:10px;padding:10px 12px;min-width:0;min-height:62px}
+.cell .lab{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:460px){.cell{padding:8px 9px}.readout{gap:7px}}
 .cell .v{font-family:var(--mono);font-size:clamp(15px,2.1vw,22px);font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2;display:block;white-space:nowrap}
 input[type=range]{
@@ -319,15 +320,15 @@ body.editing a{cursor:text}
       <div class="inst">
         <div class="inst-head">
           <span class="lab">Instrument 01 — quantization</span>
-          <span class="lab num" id="bitsLabel">16-bit</span>
+          <span class="lab num" id="bitsLabel">FP16</span>
         </div>
         <div class="bars" id="bars" aria-hidden="true"></div>
-        <label class="lab" for="bits">Drag to drop the precision</label>
-        <input type="range" id="bits" min="2" max="16" step="1" value="16" aria-describedby="verdict">
+        <label class="lab" for="bits">Drag through the formats people actually ship</label>
+        <input type="range" id="bits" min="0" max="7" step="1" value="7" aria-describedby="verdict">
         <div class="readout">
           <div class="cell"><span class="lab">Weights</span><span class="v">30M</span></div>
-          <div class="cell"><span class="lab">Per weight</span><span class="v num" id="perW">16 b</span></div>
-          <div class="cell"><span class="lab">Model size</span><span class="v num" id="size">60.0 MB</span></div>
+          <div class="cell"><span class="lab">Bits/wt</span><span class="v num" id="perW">16.0</span></div>
+          <div class="cell"><span class="lab">Size</span><span class="v num" id="size">60.0 MB</span></div>
         </div>
         <p class="verdict" id="verdict" aria-live="polite"></p>
       </div>
@@ -364,7 +365,7 @@ body.editing a{cursor:text}
       </div>
       <div class="aside">
         <span class="lab">Where the size goes</span>
-        <p>30M weights at 16 bits is 60 MB. At 4 bits it is 15 MB. The slider above does that arithmetic, and the bars show real uniform quantization of a weight signal.</p>
+        <p>30M weights at FP16 is 60 MB. At Q4_K_M it is 16.9 MB, not 15 MB — the extra comes from the per-block scales every real format carries. The slider above uses published bits-per-weight, not the nominal bit count.</p>
       </div>
     </div>
   </div>
@@ -479,17 +480,39 @@ body.editing a{cursor:text}
   var HEAD_SNAPSHOT = document.head.innerHTML;
   var BODY_TEMPLATE = document.body.innerHTML;
 
-  /* ---- instrument: real uniform quantization of a smooth weight signal ---- */
+  /* ---- instrument: real quantization formats, not a continuum ----
+     There is no 7-bit or 11-bit model. What ships is a short list of
+     formats, and their bits per weight are not whole numbers because each
+     one carries per-block scales. Figures are published GGUF bits-per-weight. */
+  var FORMATS = [
+    {name:"BitNet b1.58", bpw:1.58,   bits:0,  warn:true,
+     note:"<b>Ternary.</b> Every weight is -1, 0 or +1. You have to train for it; converting afterwards will not get you here."},
+    {name:"Q2_K",         bpw:2.625,  bits:2,  warn:true,
+     note:"<b>Aggressive.</b> Workable on a large model, rough on a small one. Reasoning length drifts hardest here."},
+    {name:"Q3_K_M",       bpw:3.875,  bits:3,  warn:true,
+     note:"<b>Three bits.</b> Not a power of two, and shipped every day. This band is where my research sits."},
+    {name:"Q4_K_M",       bpw:4.5,    bits:4,  warn:false,
+     note:"<b>The common default.</b> Most community uploads use it. At this size it fits on a microcontroller."},
+    {name:"Q5_K_M",       bpw:5.5,    bits:5,  warn:false,
+     note:"<b>Five bits.</b> Buys back some of what four gives up, for about four more megabytes."},
+    {name:"Q6_K",         bpw:6.5625, bits:6,  warn:false,
+     note:"<b>Near FP16 quality.</b> Often used only for the layers that cannot take the loss."},
+    {name:"Q8_0",         bpw:8.5,    bits:8,  warn:false,
+     note:"<b>Boring and safe.</b> Half the size of FP16 and almost none of the damage."},
+    {name:"FP16",         bpw:16,     bits:16, warn:false,
+     note:"<b>Full precision.</b> Every weight keeps its shape, and the file needs a real machine."}
+  ];
+
   var N = 26, src = [], i;
   for(i=0;i<N;i++){ src.push(Math.sin(i/(N-1)*Math.PI*1.6)*0.92); }
 
   var barsEl = document.getElementById("bars");
   var bars = [];
   for(i=0;i<N;i++){
-    var b = document.createElement("div");
-    b.className = "qbar";
-    barsEl.appendChild(b);
-    bars.push(b);
+    var bEl = document.createElement("div");
+    bEl.className = "qbar";
+    barsEl.appendChild(bEl);
+    bars.push(bEl);
   }
 
   var range = document.getElementById("bits");
@@ -499,45 +522,34 @@ body.editing a{cursor:text}
   var verdict = document.getElementById("verdict");
   var WEIGHTS = 30e6;
 
-  function quantize(w, bits){
-    var levels = Math.pow(2, bits - 1) - 1;
+  function quantize(w, f){
+    if(f.bits === 0){                     /* ternary */
+      var t = Math.round(w);
+      return t > 1 ? 1 : (t < -1 ? -1 : t);
+    }
+    var levels = Math.pow(2, f.bits - 1) - 1;
     if(levels < 1){ levels = 1; }
     return Math.round(w * levels) / levels;
   }
 
-  function render(bits){
+  function render(idx){
+    var f = FORMATS[idx];
     for(var i=0;i<N;i++){
-      var q = quantize(src[i], bits);
+      var q = quantize(src[i], f);
       var h = Math.abs(q) * 100;
       if(h < 3){ h = 3; }
       bars[i].style.height = h + "%";
       if(q < 0){ bars[i].classList.add("neg"); } else { bars[i].classList.remove("neg"); }
     }
-    var mb = WEIGHTS * bits / 8 / 1e6;
-    bitsLabel.textContent = bits + "-bit";
-    perW.textContent = bits + " b";
-    sizeEl.textContent = mb.toFixed(1) + " MB";
-
-    var msg, warn = false;
-    if(bits >= 13){
-      msg = "<b>Full precision.</b> Every weight keeps its shape, and the file needs a laptop.";
-    } else if(bits >= 9){
-      msg = "<b>Half the size, no visible cost.</b> This is the easy win everyone takes.";
-    } else if(bits >= 5){
-      msg = "<b>Fits on a Raspberry Pi.</b> The curve is steps now, and the model guesses between them.";
-    } else if(bits === 4){
-      msg = "<b>Fits on a microcontroller.</b> Four bits is the useful edge, and where my research starts.";
-      warn = true;
-    } else {
-      msg = "<b>Too far.</b> The model now misjudges how long to think. That miscalibration is what my paper is about.";
-      warn = true;
-    }
-    verdict.innerHTML = msg;
-    if(warn){ verdict.classList.add("warn"); } else { verdict.classList.remove("warn"); }
+    bitsLabel.textContent = f.name;
+    perW.textContent = f.bpw.toFixed(2).replace(/\.?0+$/, "");
+    sizeEl.textContent = (WEIGHTS * f.bpw / 8 / 1e6).toFixed(1) + " MB";
+    verdict.innerHTML = f.note;
+    if(f.warn){ verdict.classList.add("warn"); } else { verdict.classList.remove("warn"); }
   }
 
   range.addEventListener("input", function(){ render(parseInt(range.value,10)); });
-  render(16);
+  render(FORMATS.length - 1);
 
   /* ---- marquee ---- */
   var items = ["30M parameters","NumPy only","4-bit inference","Raspberry Pi","chain-of-thought length","one brief, four agents","paper trading only","Python then C++","experimental physics","one paper a week"];
