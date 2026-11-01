@@ -20,13 +20,13 @@
   /* ---------- layouts ---------- */
   var LAYOUTS = {
     wide: {
-      w: 1600, h: 1000, aspect: "xMidYMid meet", cpu: { x: 800, y: 560, s: 260 }, fw: 300, fh: 150, labels: "below",
+      w: 1900, h: 880, aspect: "xMidYMid meet", cpu: { x: 950, y: 360, s: 240 }, fw: 300, fh: 150,
       nodes: {
-        writing: { x: 800,  y: 170, pin: [800, 430], type: "vv" },
-        ai:      { x: 250,  y: 300, pin: [670, 444], type: "hh" },
-        design:  { x: 250,  y: 800, pin: [670, 676], type: "hh" },
-        maths:   { x: 1350, y: 300, pin: [930, 444], type: "hh" },
-        fintech: { x: 1350, y: 800, pin: [930, 676], type: "hh" }
+        ai:      { x: 330,  y: 200, pin: [830, 318], type: "hh" },
+        design:  { x: 330,  y: 600, pin: [830, 402], type: "hh" },
+        maths:   { x: 1570, y: 200, pin: [1070, 318], type: "hh" },
+        fintech: { x: 1570, y: 600, pin: [1070, 402], type: "hh" },
+        writing: { x: 950,  y: 660, pin: [950, 480], type: "vv" }
       }
     },
     tall: {
@@ -92,12 +92,12 @@
     RAM: function () {
       var g = [], c = [];
       for (var i = 0; i < 36; i++) if (i !== 17 && i !== 18) g.push('<rect class="p-gold" x="' + (8 + i * 8) + '" y="124" width="4" height="20" rx="1"/>');
-      for (var k = 0; k < 8; k++) c.push('<rect class="p-chip" x="' + (12 + k * 36) + '" y="34" width="30" height="46" rx="3"/>' +
-        '<rect class="p-led p-led-ram" style="--i:' + k + '" x="' + (17 + k * 36) + '" y="86" width="20" height="4" rx="2"/>');
+      for (var k = 0; k < 8; k++) c.push('<rect class="p-chip" x="' + (12 + k * 36) + '" y="30" width="30" height="42" rx="3"/>' +
+        '<rect class="p-led p-led-ram" style="--i:' + k + '" x="' + (17 + k * 36) + '" y="77" width="20" height="4" rx="2"/>');
       return '<rect class="p-sub" x="0" y="22" width="300" height="104" rx="6"/>' +
         '<circle class="p-cut" cx="0" cy="72" r="8"/><circle class="p-cut" cx="300" cy="72" r="8"/>' +
-        c.join("") + '<rect class="p-sticker" x="96" y="96" width="108" height="16" rx="2"/>' +
-        '<text class="p-sticker-t" x="150" y="108" text-anchor="middle">DDR5 · 16GB</text>' + g.join("");
+        c.join("") + '<rect class="p-sticker" x="100" y="92" width="100" height="16" rx="2"/>' +
+        '<text class="p-sticker-t" x="150" y="103.5" text-anchor="middle">DDR5 · 16GB</text>' + g.join("");
     },
     SSD: function () {
       var f = [];
@@ -138,17 +138,18 @@
   function build(mode) {
     var L = LAYOUTS[mode], c = L.cpu, half = c.s / 2, ids = Object.keys(L.nodes), svg = [];
     var blocked = [[c.x - half - 50, c.y - half - 50, c.x + half + 50, c.y + half + 50],
-      [20, 20, 360, 80], [L.w / 2 - 300, L.h - 70, L.w / 2 + 300, L.h - 10], [20, L.h - 80, 80, L.h - 20], [L.w - 80, 20, L.w - 20, 80]];
+      [10, 10, 380, 90], [L.w - 90, 10, L.w - 10, 90], [10, L.h - 90, 90, L.h - 10], [L.w - 90, L.h - 90, L.w - 10, L.h - 10],
+      mode === "wide" ? [L.w / 2 - 330, 24, L.w / 2 + 330, 84] : [L.w / 2 - 330, L.h - 70, L.w / 2 + 330, L.h - 10]];
     var mains = ids.map(function (id, i) {
       var n = L.nodes[id], e = entry(L, n), rt = route(n.pin, e, n.type);
       rt.pts.forEach(function (p, k) { if (k) { var q = rt.pts[k - 1]; blocked.push([Math.min(p[0], q[0]) - 6, Math.min(p[1], q[1]) - 6, Math.max(p[0], q[0]) + 6, Math.max(p[1], q[1]) + 6]); } });
-      var labelPad = mode === "wide" ? 80 : 70;
+      var labelPad = mode === "wide" ? 100 : 96;
       blocked.push([n.x - L.fw / 2 - 64, n.y - L.fh / 2 - (e.side === "bottom" ? labelPad : 24), n.x + L.fw / 2 + 24, n.y + L.fh / 2 + (e.side === "bottom" ? 24 : labelPad)]);
       /* companion: a thinner parallel trace from the neighbouring pin */
       var off = (mode === "wide" ? 26 : 22) * (n.type === "vv" ? (n.pin[0] < c.x ? -1 : 1) : (n.pin[1] <= c.y ? -1 : 1));
       if (n.type === "vv" && n.pin[0] === c.x) off = 22;
       var p2 = n.type === "hh" ? [n.pin[0], n.pin[1] + off] : [n.pin[0] + off, n.pin[1]];
-      var e2 = n.type === "vv" ? { x: e.x + off * 1.6, y: e.y } : { x: e.x, y: e.y + (off > 0 ? 34 : -34) };
+      var e2 = n.type === "vv" ? { x: e.x + off * 1.6, y: e.y + (n.pin[1] < n.y ? -34 : 34) } : { x: e.x + (n.pin[0] < n.x ? -34 : 34), y: e.y + (off > 0 ? 34 : -34) };
       return { id: id, n: n, e: e, d: rt.d, d2: route(p2, e2, n.type).d, e2: e2, i: i };
     });
 
@@ -194,8 +195,8 @@
     /* scattered resistors and capacitors */
     for (var m = 0, t2 = 0; m < (mode === "wide" ? 22 : 14) && t2 < 900; t2++) {
       var sx = Math.round(rand() * L.w), sy = Math.round(rand() * L.h);
-      if (!free(sx, sy, 22)) continue;
-      blocked.push([sx - 20, sy - 20, sx + 20, sy + 20]);
+      if (!free(sx, sy, 26) || !free(sx + 34, sy, 14) || !free(sx - 20, sy - 22, 10)) continue;
+      blocked.push([sx - 24, sy - 26, sx + 44, sy + 24]);
       var rot = rand() < 0.5 ? 0 : 90, cap = rand() < 0.4;
       back.push('<g transform="translate(' + sx + " " + sy + ") rotate(" + rot + ')"><rect class="' + (cap ? "smd-c" : "smd-r") + '" x="-11" y="-6" width="22" height="12" rx="2"/>' +
         '<rect class="p-gold" x="-14" y="-6" width="6" height="12" rx="1"/><rect class="p-gold" x="8" y="-6" width="6" height="12" rx="1"/></g>' +
@@ -205,7 +206,7 @@
     [[50, 50], [L.w - 50, 50], [50, L.h - 50], [L.w - 50, L.h - 50]].forEach(function (h) {
       back.push('<circle class="p-gold" cx="' + h[0] + '" cy="' + h[1] + '" r="20"/><circle class="pcb-mhole" cx="' + h[0] + '" cy="' + h[1] + '" r="11"/>');
     });
-    back.push('<text class="pcb-silk-l" x="' + (L.w / 2) + '" y="' + (L.h - 30) + '" text-anchor="middle">NABHYARAJ-SONAGARA.GITHUB.IO · REV 11.26</text>' +
+    back.push('<text class="pcb-silk-l" x="' + (L.w / 2) + '" y="' + (mode === "wide" ? 60 : L.h - 30) + '" text-anchor="middle">NABHYARAJ-SONAGARA.GITHUB.IO · REV 11.26</text>' +
       '<text class="pcb-silk-l" x="86" y="58">MADE IN AHMEDABAD</text>');
     back.push("</g>");
     svg.push(back.join(""));
@@ -244,7 +245,7 @@
       g.push('<rect class="p-court" x="' + (x0 - 14) + '" y="' + (y0 - 14) + '" width="' + (L.fw + 28) + '" height="' + (L.fh + 28) + '" rx="12"/>');
       g.push('<g transform="translate(' + x0 + " " + y0 + ") scale(" + sc + ')">' + PARTS[info.part]() + "</g>");
       g.push('<text class="p-name" x="' + x0 + '" y="' + nameY + '">' + esc(mode === "tall" ? info.short : info.name) + "</text>");
-      g.push('<text class="p-ref" x="' + x0 + '" y="' + refY + '">' + esc(info.ref) + (mode === "wide" ? " · " + esc(info.role.toUpperCase()) : "") + "</text>");
+      g.push('<text class="p-ref" x="' + x0 + '" y="' + refY + '">' + esc(info.ref) + "</text>");
       g.push('<circle class="p-gold" cx="' + r(t.e.x) + '" cy="' + r(t.e.y) + '" r="11"/><circle class="d-via-h" cx="' + r(t.e.x) + '" cy="' + r(t.e.y) + '" r="4.5"/>');
       g.push("</g>");
       front.push(g.join(""));
@@ -298,7 +299,7 @@
   }
   function fillBar(id) {
     var info = byId[id];
-    bar.innerHTML = '<div class="pcb-bar-id"><span class="label">' + esc(info.ref) + " · " + esc(info.role) + "</span><h2>" + esc(info.name) + "</h2></div>" +
+    bar.innerHTML = '<div class="pcb-bar-id"><span class="label">' + esc(info.ref) + "</span><h2>" + esc(info.name) + "</h2></div>" +
       '<p class="pcb-bar-text">' + esc(info.text) + "</p>" +
       '<div class="pcb-bar-work"><span class="label">' + (info.related.length ? "Wired to" : "Wired to nothing yet") + "</span>" +
       (info.related.length ? '<div class="pcb-chips">' + info.related.map(chip).join("") + "</div>" : "") + "</div>";
