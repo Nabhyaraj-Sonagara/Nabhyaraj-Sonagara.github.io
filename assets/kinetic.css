@@ -394,17 +394,17 @@ a.row:hover .row-t { color: var(--signal-text); }
    The Interests page: a green circuit board. It ignores the theme on purpose.
    ========================================================================== */
 body.pcb-page {
-  --pcb: #0c8c44; --pcb-lit: #f3ff6e; --pcb-gold: #e8b949; --pcb-trace: #3fce7c;
+  --pcb: #066f35; --pcb-lit: #d7ff3d; --pcb-gold: #f0bf45; --pcb-trace: #22c466;
   --pcb-silk: #f3f8ee; --pcb-silk-2: rgba(243, 248, 238, .7);
-  --ground: #0c8c44; --surface: rgba(0, 0, 0, .2); --line: rgba(255, 255, 255, .2);
+  --ground: #066f35; --surface: rgba(0, 0, 0, .2); --line: rgba(255, 255, 255, .2);
   --ink: #f3f8ee; --ink-muted: #cbead3; --signal: #ff5b2e; --signal-text: var(--pcb-lit);
   --on-accent: #131311; --lime: var(--pcb-lit); --focus: var(--pcb-lit); --cursor-blend: normal;
   color: var(--ink);
-  background: radial-gradient(ellipse 120% 1100px at 50% 300px, #14a854 0%, #0c8c44 55%, #0a7d3c 100%) no-repeat, #0a7d3c;
+  background: radial-gradient(ellipse 120% 1100px at 50% 320px, #08893f 0%, #066f35 52%, #04552a 100%) no-repeat, #04552a;
 }
 .pcb-page .kn-hero-hl, [data-theme] .pcb-page .kn-hero-hl { color: var(--pcb-lit); background: none; animation: none; }
 .pcb-page .kn-nav, .pcb-page .theme-btn { background: rgba(0, 0, 0, .22); border-color: rgba(255, 255, 255, .2); box-shadow: none; }
-.pcb-page .site-head.scrolled { background: color-mix(in srgb, #0a7a3b 86%, transparent); }
+.pcb-page .site-head.scrolled { background: color-mix(in srgb, #055f2d 88%, transparent); }
 .pcb-page .kn-btn-ghost:hover { background: rgba(0, 0, 0, .2); }
 
 .pcb-top { padding-top: clamp(16px, 2.5vw, 32px); }
@@ -418,10 +418,10 @@ html:not(.js) .pcb-stage, html:not(.js) .pcb-bar { display: none; }
 @media (max-width: 720px), (max-aspect-ratio: 4/5) { .pcb-stage { height: auto; aspect-ratio: 900 / 1460; } }
 
 /* board texture and the small stuff */
-.pcb-dot { fill: rgba(255, 255, 255, .07); }
-.d-trace { fill: none; stroke: #18a656; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.pcb-dot { fill: rgba(255, 255, 255, .06); }
+.d-trace { fill: none; stroke: #0c8a45; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
 .d-via { fill: var(--pcb-gold); }
-.d-via-h, .pcb-mhole { fill: #053d1d; }
+.d-via-h, .pcb-mhole { fill: #02341a; }
 .smd-r { fill: #141816; }
 .smd-c { fill: #b0814a; }
 .pcb-silk-s { font: 500 12px var(--font-mono); letter-spacing: .06em; fill: var(--pcb-silk-2); }
@@ -462,8 +462,8 @@ html:not(.js) .pcb-stage, html:not(.js) .pcb-bar { display: none; }
 .p-fan { transform-box: fill-box; transform-origin: center; }
 .on .p-fan { animation: p-spinup 2.2s cubic-bezier(.5, 0, 1, 1), p-spin .8s linear 2.2s infinite; }
 .p-gold { fill: var(--pcb-gold); }
-.p-sub { fill: #06602f; stroke: #0a4f27; stroke-width: 1.5; }
-.p-cut { fill: #0c8c44; }
+.p-sub { fill: #04552a; stroke: #034220; stroke-width: 1.5; }
+.p-cut { fill: #066f35; }
 .p-led { fill: #2b3632; transition: fill 500ms var(--ease-out); }
 .on .p-led { fill: var(--pcb-lit); }
 .on .p-led-ram { animation: p-blink 1.3s steps(1) infinite; animation-delay: calc(var(--i) * 160ms); }
@@ -482,13 +482,6 @@ html:not(.js) .pcb-stage, html:not(.js) .pcb-bar { display: none; }
 .p-glass { fill: #ffffff; opacity: .05; }
 .p-ribbon { fill: #d29a35; }
 .p-ribbon-l { stroke: #8a5f17; stroke-width: 1.5; }
-.p-cardg { transform-box: fill-box; transform-origin: 50% 100%; transform: translateX(var(--x)) rotate(var(--r)) translateY(30px); transition: transform 1.3s var(--ease-float) calc(var(--i) * 110ms); }
-.on .p-cardg { transform: translateX(calc(var(--x) * 1.15)) rotate(calc(var(--r) * 1.5)) translateY(0); }
-.p-card { fill: #f6f2ea; stroke: #d9d2c3; stroke-width: 1.5; }
-.p-card-in { fill: none; stroke: #ff5b2e; stroke-width: 1.5; }
-.p-suit { fill: #ff5b2e; }
-.p-card-t { font: 700 13px var(--font-display); fill: #131311; }
-.p-lip { fill: #1d2421; stroke: #3a4842; stroke-width: 1.5; }
 .p-ihs { fill: #1a201d; stroke: #3b4a43; stroke-width: 2; }
 .p-cpu-name { font-family: var(--font-display); font-weight: 700; letter-spacing: -.03em; fill: var(--pcb-silk); }
 .p-cpu-sub { font: 500 14px var(--font-mono); letter-spacing: .12em; fill: var(--pcb-silk-2); }

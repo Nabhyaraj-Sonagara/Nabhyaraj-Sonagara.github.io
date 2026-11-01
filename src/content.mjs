@@ -188,10 +188,6 @@ export const fields = {
       role: "Power supply",
       text: "The fourth field I study. Trading bots trained and run on paper against Indian markets, so I learn how a strategy fails before a failure costs anything.",
       related: ["paper-trading-bots"] },
-    { id: "games", name: "Deckbuilders", short: "Deckbuilders", part: "SLOT", ref: "J4",
-      role: "Card slot",
-      text: "I play score-chasing deckbuilders, which is where I learned that constraints are what make a thing interesting.",
-      related: [] },
   ],
 };
 

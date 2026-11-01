@@ -20,14 +20,13 @@
   /* ---------- layouts ---------- */
   var LAYOUTS = {
     wide: {
-      w: 1600, h: 1000, aspect: "xMidYMid meet", cpu: { x: 800, y: 500, s: 260 }, fw: 300, fh: 150, labels: "below",
+      w: 1600, h: 1000, aspect: "xMidYMid meet", cpu: { x: 800, y: 560, s: 260 }, fw: 300, fh: 150, labels: "below",
       nodes: {
-        ai:      { x: 250,  y: 190, pin: [740, 370], type: "vh" },
-        writing: { x: 250,  y: 500, pin: [670, 500], type: "hh" },
-        design:  { x: 250,  y: 810, pin: [740, 630], type: "vh" },
-        maths:   { x: 1350, y: 190, pin: [860, 370], type: "vh" },
-        fintech: { x: 1350, y: 500, pin: [930, 500], type: "hh" },
-        games:   { x: 1350, y: 810, pin: [860, 630], type: "vh" }
+        writing: { x: 800,  y: 170, pin: [800, 430], type: "vv" },
+        ai:      { x: 250,  y: 300, pin: [670, 444], type: "hh" },
+        design:  { x: 250,  y: 800, pin: [670, 676], type: "hh" },
+        maths:   { x: 1350, y: 300, pin: [930, 444], type: "hh" },
+        fintech: { x: 1350, y: 800, pin: [930, 676], type: "hh" }
       }
     },
     tall: {
@@ -36,9 +35,8 @@
         ai:      { x: 150, y: 250,  pin: [375, 620], type: "vv" },
         maths:   { x: 450, y: 250,  pin: [450, 620], type: "vv" },
         writing: { x: 750, y: 250,  pin: [525, 620], type: "vv" },
-        design:  { x: 150, y: 1210, pin: [375, 840], type: "vv" },
-        fintech: { x: 450, y: 1210, pin: [450, 840], type: "vv" },
-        games:   { x: 750, y: 1210, pin: [525, 840], type: "vv" }
+        design:  { x: 270, y: 1210, pin: [375, 840], type: "vv" },
+        fintech: { x: 630, y: 1210, pin: [525, 840], type: "vv" }
       }
     }
   };
@@ -130,16 +128,6 @@
         '<rect class="p-glass" x="14" y="20" width="208" height="110" rx="4"/>' +
         '<rect class="p-ribbon" x="236" y="44" width="44" height="62"/>' + ln.join("") +
         '<rect class="p-chip" x="278" y="38" width="20" height="74" rx="3"/><circle class="p-led" cx="118" cy="137" r="3"/>';
-    },
-    SLOT: function () {
-      var cards = [[-48, -12, "A"], [0, 0, "K"], [48, 12, "7"]].map(function (c, i) {
-        return '<g class="p-cardg" style="--x:' + c[0] + "px;--r:" + c[1] + "deg;--i:" + i + '">' +
-          '<rect class="p-card" x="119" y="8" width="62" height="88" rx="7"/><rect class="p-card-in" x="124" y="13" width="52" height="78" rx="4"/>' +
-          '<path class="p-suit" d="M150 37 L162 53 L150 69 L138 53 Z"/><text class="p-card-t" x="128" y="27">' + c[2] + "</text></g>";
-      }).join("");
-      return cards + '<rect class="p-chip" x="8" y="84" width="284" height="62" rx="10"/>' +
-        '<rect class="p-lip" x="26" y="78" width="248" height="12" rx="5"/>' +
-        '<circle class="p-led" cx="262" cy="118" r="5"/><text class="p-print" x="30" y="124">CARD SLOT</text>';
     }
   };
 

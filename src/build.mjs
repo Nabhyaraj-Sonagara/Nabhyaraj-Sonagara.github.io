@@ -81,7 +81,7 @@ const board = {
 };
 
 function interestsLink(label = "See how my interests connect") {
-  return `<a class="row kn-reveal" href="/interests/"><span class="label">Interests</span><span><span class="row-t">${esc(label)}</span><span class="row-d">Physics is the CPU. AI, maths, writing, design, fintech and deckbuilders are the parts wired to it.</span></span><span class="label">Board ↗</span></a>`;
+  return `<a class="row kn-reveal" href="/interests/"><span class="label">Interests</span><span><span class="row-t">${esc(label)}</span><span class="row-d">Physics is the CPU. AI, maths, writing, design and fintech are the parts wired to it.</span></span><span class="label">Board ↗</span></a>`;
 }
 
 function contactLine() {
@@ -268,7 +268,7 @@ projects.forEach((p, idx) => {
 
 pages["/interests/"] = page({
   path: "/interests/", active: "/interests/", title: "Interests", bodyClass: "pcb-page", scripts: ["board.js"],
-  description: "Nabhyaraj Sonagara's interests as a circuit board: physics at the core, with AI, mathematics, writing, design, fintech and deckbuilders wired to it, and the work behind each.",
+  description: "Nabhyaraj Sonagara's interests as a circuit board: physics at the core, with AI, mathematics, writing, design and fintech wired to it, and the work behind each.",
   body: `
 <section class="pcb-hero">
   <div class="wrap pcb-top">
