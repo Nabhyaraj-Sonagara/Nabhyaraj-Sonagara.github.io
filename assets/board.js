@@ -96,8 +96,7 @@
         '<rect class="p-led p-led-ram" style="--i:' + k + '" x="' + (17 + k * 36) + '" y="77" width="20" height="4" rx="2"/>');
       return '<rect class="p-sub" x="0" y="22" width="300" height="104" rx="6"/>' +
         '<circle class="p-cut" cx="0" cy="72" r="8"/><circle class="p-cut" cx="300" cy="72" r="8"/>' +
-        c.join("") + '<rect class="p-sticker" x="100" y="92" width="100" height="16" rx="2"/>' +
-        '<text class="p-sticker-t" x="150" y="103.5" text-anchor="middle">DDR5 · 16GB</text>' + g.join("");
+        c.join("") + g.join("");
     },
     SSD: function () {
       var f = [];
@@ -154,7 +153,8 @@
     });
 
     svg.push('<svg class="pcb-svg" viewBox="0 0 ' + L.w + " " + L.h + '" preserveAspectRatio="' + L.aspect + '">');
-    svg.push('<defs><filter id="pcb-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter>' +
+    svg.push('<defs><filter id="pcb-glow" filterUnits="userSpaceOnUse" x="-100" y="-100" width="' + (L.w + 200) + '" height="' + (L.h + 200) + '"><feGaussianBlur stdDeviation="7"/></filter>' +
+      '<filter id="pcb-glow-head" filterUnits="userSpaceOnUse" x="-60" y="-60" width="120" height="120"><feGaussianBlur stdDeviation="7"/></filter>' +
       '<pattern id="pcb-dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.4" class="pcb-dot"/></pattern></defs>');
 
     /* back layer: texture, copper under the mask, small parts, holes, silkscreen */
@@ -222,7 +222,7 @@
 
     /* CPU */
     var cpu = ['<g class="pcb-cpu" data-node="physics" tabindex="0" role="button" aria-label="Physics, the CPU">'];
-    cpu.push('<rect class="p-cpu-glow" x="' + (c.x - half - 16) + '" y="' + (c.y - half - 16) + '" width="' + (c.s + 32) + '" height="' + (c.s + 32) + '" rx="28"/>');
+    cpu.push('<rect class="p-cpu-glow" x="' + (c.x - half - 30) + '" y="' + (c.y - half - 30) + '" width="' + (c.s + 60) + '" height="' + (c.s + 60) + '" rx="38"/>');
     for (var q = -4; q <= 4; q++) {
       var o = q * (c.s / 10);
       cpu.push('<rect class="p-gold" x="' + (c.x + o - 4) + '" y="' + (c.y - half - 14) + '" width="8" height="16" rx="1.5"/><rect class="p-gold" x="' + (c.x + o - 4) + '" y="' + (c.y + half - 2) + '" width="8" height="16" rx="1.5"/>');
