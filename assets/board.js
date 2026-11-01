@@ -1,64 +1,49 @@
-/* The circuit board. The Fields card grows until it fills the screen, then a
-   board draws itself in: Physics is the CPU, and a trace runs from it to every
-   other interest. One lime pulse at a time travels out along a trace. The whole
-   board drifts slightly with the pointer, so it floats instead of sitting flat.
-   Closes on the button, Escape or the browser's back button. */
+/* The Interests board. A green circuit board: Physics is the CPU, and every
+   other interest is a part wired to it (GPU, RAM, SSD, LCD, PSU, card slot).
+   On load the CPU boots, then one pulse leaves for every part at once; each
+   trace stays lit behind it and each part powers on when the pulse arrives.
+   Picking a part shows what it is and the work wired to it. */
 (function () {
   "use strict";
-  var board = document.getElementById("board");
-  var dataEl = document.getElementById("board-data");
-  if (!board || !dataEl) return;
+  var stage = document.getElementById("pcb-stage");
+  var dataEl = document.getElementById("pcb-data");
+  if (!stage || !dataEl) return;
   var data = JSON.parse(dataEl.textContent);
-  var stage = board.querySelector(".board-stage");
-  var read = board.querySelector(".board-read");
-  var closeBtn = board.querySelector("[data-board-close]");
-  var openers = Array.prototype.slice.call(document.querySelectorAll("[data-board-open]"));
+  var bar = document.getElementById("pcb-bar");
   var reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var root = document.documentElement;
-  var FLOAT = "cubic-bezier(0.22, 1, 0.36, 1)";
-  var MOVE = "cubic-bezier(0.65, 0, 0.35, 1)";
-  var GROW = "cubic-bezier(0.5, 0, 0.12, 1)";
-
-  var state = { open: false, opener: null, pushed: false, sel: null, mode: null, raf: 0 };
   var byId = {};
   [data.core].concat(data.nodes).forEach(function (n) { byId[n.id] = n; });
 
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   function r(n) { return Math.round(n * 10) / 10; }
 
-  /* ---------- layouts: one wide, one tall ---------- */
+  /* ---------- layouts ---------- */
   var LAYOUTS = {
     wide: {
-      w: 1600, h: 880, aspect: "xMidYMid meet", cpu: { x: 800, y: 420, s: 240, name: 46 },
-      nodeW: 290, nodeH: 88, useShort: false,
+      w: 1600, h: 1000, aspect: "xMidYMid meet", cpu: { x: 800, y: 560, s: 260 }, fw: 300, fh: 150, labels: "below",
       nodes: {
-        ai:      { x: 300,  y: 150, pin: [740, 300], type: "vh" },
-        writing: { x: 220,  y: 420, pin: [680, 420], type: "hh" },
-        design:  { x: 300,  y: 690, pin: [740, 540], type: "vh" },
-        maths:   { x: 1300, y: 150, pin: [860, 300], type: "vh" },
-        games:   { x: 1380, y: 420, pin: [920, 420], type: "hh" },
-        fintech: { x: 1300, y: 690, pin: [860, 540], type: "vh" }
+        writing: { x: 800,  y: 170, pin: [800, 430], type: "vv" },
+        ai:      { x: 250,  y: 300, pin: [670, 444], type: "hh" },
+        design:  { x: 250,  y: 800, pin: [670, 676], type: "hh" },
+        maths:   { x: 1350, y: 300, pin: [930, 444], type: "hh" },
+        fintech: { x: 1350, y: 800, pin: [930, 676], type: "hh" }
       }
     },
     tall: {
-      w: 900, h: 1220, aspect: "xMidYMin meet", cpu: { x: 450, y: 560, s: 200, name: 40 },
-      nodeW: 250, nodeH: 84, useShort: true,
+      w: 900, h: 1460, aspect: "xMidYMid meet", cpu: { x: 450, y: 730, s: 220 }, fw: 240, fh: 120,
       nodes: {
-        ai:      { x: 150, y: 170, pin: [375, 460], type: "vv" },
-        maths:   { x: 450, y: 170, pin: [450, 460], type: "vv" },
-        writing: { x: 750, y: 170, pin: [525, 460], type: "vv" },
-        design:  { x: 150, y: 950, pin: [375, 660], type: "vv" },
-        fintech: { x: 450, y: 950, pin: [450, 660], type: "vv" },
-        games:   { x: 750, y: 950, pin: [525, 660], type: "vv" }
+        ai:      { x: 150, y: 250,  pin: [375, 620], type: "vv" },
+        maths:   { x: 450, y: 250,  pin: [450, 620], type: "vv" },
+        writing: { x: 750, y: 250,  pin: [525, 620], type: "vv" },
+        design:  { x: 270, y: 1210, pin: [375, 840], type: "vv" },
+        fintech: { x: 630, y: 1210, pin: [525, 840], type: "vv" }
       }
     }
   };
 
-  /* where a trace meets a node: the side facing the CPU */
   function entry(L, n) {
-    var hw = L.nodeW / 2, hh = L.nodeH / 2;
-    if (n.type === "vv") return { x: n.x, y: n.y + (n.pin[1] < n.y ? -hh : hh), side: n.pin[1] < n.y ? "top" : "bottom" };
-    return { x: n.x + (n.pin[0] < n.x ? -hw : hw), y: n.y, side: n.pin[0] < n.x ? "left" : "right" };
+    if (n.type === "vv") return { x: n.x, y: n.y + (n.pin[1] < n.y ? -L.fh / 2 : L.fh / 2), side: n.pin[1] < n.y ? "top" : "bottom" };
+    return { x: n.x + (n.pin[0] < n.x ? -L.fw / 2 : L.fw / 2), y: n.y, side: n.pin[0] < n.x ? "left" : "right" };
   }
 
   /* PCB routing: straight runs joined by 45-degree chamfers */
@@ -71,7 +56,7 @@
     } else if (type === "vv") {
       d = Math.abs(tx - px); lead = Math.max(0, (Math.abs(ty - py) - d) / 2);
       pts.push([px, py + sy * lead], [tx, py + sy * (lead + d)]);
-    } else { /* vh: out vertically, into the node horizontally */
+    } else {
       d = Math.max(0, Math.min(Math.abs(tx - px) - 70, Math.abs(ty - py) - 40));
       pts.push([px, ty - sy * d], [px + sx * d, ty]);
     }
@@ -84,150 +69,187 @@
     return { d: "M" + out.map(function (q) { return r(q[0]) + " " + r(q[1]); }).join(" L"), pts: out };
   }
 
-  /* a small seeded random so the decoration is the same on every visit */
   function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
 
-  function decoTraces(L, blocked) {
-    var rand = rng(L.w * 7 + 3), out = [], tries = 0;
-    var dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-    function free(x, y) {
-      if (x < 30 || y < 30 || x > L.w - 30 || y > L.h - 30) return false;
-      for (var i = 0; i < blocked.length; i++) {
-        var b = blocked[i];
-        if (x > b[0] - 26 && x < b[2] + 26 && y > b[1] - 26 && y < b[3] + 26) return false;
-      }
+  /* ---------- the parts, drawn in a 300 x 150 box ---------- */
+  function fan(cx, cy, size) {
+    var b = [];
+    for (var i = 0; i < 7; i++) b.push('<path class="p-blade" transform="translate(' + cx + " " + cy + ") rotate(" + r(i * 360 / 7) + ") scale(" + size + ')" d="M0 -7 C 15 -19 31 -22 39 -8 C 27 -6 15 0 6 6 Z"/>');
+    return '<circle class="p-hole" cx="' + cx + '" cy="' + cy + '" r="' + r(44 * size) + '"/><g class="p-fan"><circle fill="none" cx="' + cx + '" cy="' + cy + '" r="' + r(42 * size) + '"/>' + b.join("") +
+      '<circle class="p-hub" cx="' + cx + '" cy="' + cy + '" r="' + r(12 * size) + '"/></g>';
+  }
+  var PARTS = {
+    GPU: function () {
+      var f = [];
+      for (var i = 0; i < 26; i++) if (i !== 7) f.push('<rect class="p-gold" x="' + (34 + i * 9) + '" y="128" width="5" height="18" rx="1"/>');
+      return '<rect class="p-chip" x="0" y="6" width="300" height="122" rx="14"/>' +
+        '<rect class="p-edge" x="10" y="16" width="280" height="102" rx="9"/>' +
+        fan(82, 67, 1) + fan(218, 67, 1) +
+        '<circle class="p-ring" cx="82" cy="67" r="44"/><circle class="p-ring" cx="218" cy="67" r="44"/>' +
+        '<rect class="p-led p-led-bar" x="122" y="10" width="56" height="4" rx="2"/>' +
+        '<text class="p-print" x="150" y="112" text-anchor="middle">GPU</text>' + f.join("");
+    },
+    RAM: function () {
+      var g = [], c = [];
+      for (var i = 0; i < 36; i++) if (i !== 17 && i !== 18) g.push('<rect class="p-gold" x="' + (8 + i * 8) + '" y="124" width="4" height="20" rx="1"/>');
+      for (var k = 0; k < 8; k++) c.push('<rect class="p-chip" x="' + (12 + k * 36) + '" y="34" width="30" height="46" rx="3"/>' +
+        '<rect class="p-led p-led-ram" style="--i:' + k + '" x="' + (17 + k * 36) + '" y="86" width="20" height="4" rx="2"/>');
+      return '<rect class="p-sub" x="0" y="22" width="300" height="104" rx="6"/>' +
+        '<circle class="p-cut" cx="0" cy="72" r="8"/><circle class="p-cut" cx="300" cy="72" r="8"/>' +
+        c.join("") + '<rect class="p-sticker" x="96" y="96" width="108" height="16" rx="2"/>' +
+        '<text class="p-sticker-t" x="150" y="108" text-anchor="middle">DDR5 · 16GB</text>' + g.join("");
+    },
+    SSD: function () {
+      var f = [];
+      for (var i = 0; i < 9; i++) if (i !== 3) f.push('<rect class="p-gold" x="0" y="' + (44 + i * 7) + '" width="18" height="4" rx="1"/>');
+      return '<rect class="p-chip" x="16" y="40" width="270" height="70" rx="8"/>' + f.join("") +
+        '<rect class="p-ctrl" x="36" y="52" width="46" height="46" rx="4"/>' +
+        '<rect class="p-nand" x="96" y="50" width="72" height="50" rx="3"/><rect class="p-nand" x="180" y="50" width="72" height="50" rx="3"/>' +
+        '<text class="p-print" x="132" y="80" text-anchor="middle">NAND</text><text class="p-print" x="216" y="80" text-anchor="middle">NAND</text>' +
+        '<circle class="p-gold" cx="292" cy="75" r="11"/><circle class="p-hole" cx="292" cy="75" r="5"/>' +
+        '<circle class="p-led p-led-blink" cx="264" cy="56" r="4"/>';
+    },
+    PSU: function () {
+      return '<rect class="p-chip" x="8" y="4" width="284" height="142" rx="12"/>' + fan(100, 75, 1.28) +
+        '<circle class="p-ring" cx="100" cy="75" r="56"/><circle class="p-ring" cx="100" cy="75" r="40"/><circle class="p-ring" cx="100" cy="75" r="24"/>' +
+        '<path class="p-ring" d="M44 75 H156 M100 19 V131"/>' +
+        '<rect class="p-switch" x="194" y="30" width="56" height="32" rx="7"/><rect class="p-rocker" x="199" y="35" width="24" height="22" rx="4"/>' +
+        '<rect class="p-edge" x="190" y="78" width="64" height="44" rx="9"/>' +
+        '<rect class="p-gold" x="205" y="92" width="6" height="16" rx="1"/><rect class="p-gold" x="219" y="92" width="6" height="16" rx="1"/><rect class="p-gold" x="233" y="92" width="6" height="16" rx="1"/>' +
+        '<circle class="p-led" cx="274" cy="22" r="5"/><text class="p-print" x="274" y="138" text-anchor="end">12V</text>';
+    },
+    LCD: function () {
+      var cols = ["#ff5b2e", "#d7ff3d", "#f2efe6", "#ffd6c4", "#6a2410", "#2b2b27", "#ffffff"], b = [], ln = [];
+      for (var i = 0; i < 7; i++) b.push('<rect class="p-bar" style="--i:' + i + ";fill:" + cols[i] + '" x="' + r(14 + i * 208 / 7) + '" y="20" width="' + r(208 / 7 + 0.5) + '" height="78"/>');
+      for (var k = 0; k < 4; k++) b.push('<rect class="p-bar" style="--i:' + (7 + k) + ";fill:" + ["#141412", "#ff5b2e", "#141412", "#d7ff3d"][k] + '" x="' + (14 + k * 52) + '" y="98" width="52" height="32"/>');
+      for (var j = 0; j < 6; j++) ln.push('<line class="p-ribbon-l" x1="236" y1="' + (50 + j * 10) + '" x2="280" y2="' + (50 + j * 10) + '"/>');
+      return '<rect class="p-chip" x="0" y="6" width="236" height="138" rx="12"/>' +
+        '<rect class="p-screen" x="14" y="20" width="208" height="110" rx="4"/>' + b.join("") +
+        '<rect class="p-glass" x="14" y="20" width="208" height="110" rx="4"/>' +
+        '<rect class="p-ribbon" x="236" y="44" width="44" height="62"/>' + ln.join("") +
+        '<rect class="p-chip" x="278" y="38" width="20" height="74" rx="3"/><circle class="p-led" cx="118" cy="137" r="3"/>';
+    }
+  };
+
+  /* ---------- build the SVG ---------- */
+  var state = { mode: null, sel: "physics", booted: false, raf: 0 };
+  var els = {};
+
+  function build(mode) {
+    var L = LAYOUTS[mode], c = L.cpu, half = c.s / 2, ids = Object.keys(L.nodes), svg = [];
+    var blocked = [[c.x - half - 50, c.y - half - 50, c.x + half + 50, c.y + half + 50],
+      [20, 20, 360, 80], [L.w / 2 - 300, L.h - 70, L.w / 2 + 300, L.h - 10], [20, L.h - 80, 80, L.h - 20], [L.w - 80, 20, L.w - 20, 80]];
+    var mains = ids.map(function (id, i) {
+      var n = L.nodes[id], e = entry(L, n), rt = route(n.pin, e, n.type);
+      rt.pts.forEach(function (p, k) { if (k) { var q = rt.pts[k - 1]; blocked.push([Math.min(p[0], q[0]) - 6, Math.min(p[1], q[1]) - 6, Math.max(p[0], q[0]) + 6, Math.max(p[1], q[1]) + 6]); } });
+      var labelPad = mode === "wide" ? 80 : 70;
+      blocked.push([n.x - L.fw / 2 - 64, n.y - L.fh / 2 - (e.side === "bottom" ? labelPad : 24), n.x + L.fw / 2 + 24, n.y + L.fh / 2 + (e.side === "bottom" ? 24 : labelPad)]);
+      /* companion: a thinner parallel trace from the neighbouring pin */
+      var off = (mode === "wide" ? 26 : 22) * (n.type === "vv" ? (n.pin[0] < c.x ? -1 : 1) : (n.pin[1] <= c.y ? -1 : 1));
+      if (n.type === "vv" && n.pin[0] === c.x) off = 22;
+      var p2 = n.type === "hh" ? [n.pin[0], n.pin[1] + off] : [n.pin[0] + off, n.pin[1]];
+      var e2 = n.type === "vv" ? { x: e.x + off * 1.6, y: e.y } : { x: e.x, y: e.y + (off > 0 ? 34 : -34) };
+      return { id: id, n: n, e: e, d: rt.d, d2: route(p2, e2, n.type).d, e2: e2, i: i };
+    });
+
+    svg.push('<svg class="pcb-svg" viewBox="0 0 ' + L.w + " " + L.h + '" preserveAspectRatio="' + L.aspect + '">');
+    svg.push('<defs><filter id="pcb-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter>' +
+      '<pattern id="pcb-dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.4" class="pcb-dot"/></pattern></defs>');
+
+    /* back layer: texture, copper under the mask, small parts, holes, silkscreen */
+    var back = ['<g class="pcb-layer pcb-back" data-depth="0.4"><rect x="-200" y="-200" width="' + (L.w + 400) + '" height="' + (L.h + 400) + '" fill="url(#pcb-dots)"/>'];
+    var rand = rng(L.w * 13 + 7);
+    function free(x, y, m) {
+      if (x < 40 || y < 40 || x > L.w - 40 || y > L.h - 40) return false;
+      for (var i = 0; i < blocked.length; i++) { var b = blocked[i]; if (x > b[0] - m && x < b[2] + m && y > b[1] - m && y < b[3] + m) return false; }
       return true;
     }
-    while (out.length < (L.w > 1000 ? 26 : 16) && tries < 900) {
+    var dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]], made = 0, tries = 0;
+    while (made < (mode === "wide" ? 30 : 20) && tries < 1500) {
       tries++;
       var x = Math.round(rand() * L.w / 20) * 20, y = Math.round(rand() * L.h / 20) * 20;
-      if (!free(x, y)) continue;
+      if (!free(x, y, 16)) continue;
       var pts = [[x, y]], dir = dirs[Math.floor(rand() * 4)], ok = true;
-      var segs = 2 + Math.floor(rand() * 2);
-      for (var s = 0; s < segs && ok; s++) {
-        var len = 40 + Math.round(rand() * 5) * 20;
-        var last = pts[pts.length - 1];
+      for (var s = 0; s < 2 + Math.floor(rand() * 2) && ok; s++) {
+        var last = pts[pts.length - 1], len = 40 + Math.round(rand() * 5) * 20;
         var nx = last[0] + dir[0] * len, ny = last[1] + dir[1] * len;
-        for (var k = 0; k <= 8; k++) if (!free(last[0] + (nx - last[0]) * k / 8, last[1] + (ny - last[1]) * k / 8)) ok = false;
+        for (var k = 1; k <= 8; k++) if (!free(last[0] + (nx - last[0]) * k / 8, last[1] + (ny - last[1]) * k / 8, 12)) ok = false;
         if (!ok) break;
         pts.push([nx, ny]);
-        var c = 30 + Math.round(rand() * 2) * 20, turn = rand() < 0.5 ? 1 : -1;
-        var dx = dir[0] ? dir[0] : turn, dy = dir[1] ? dir[1] : turn;
-        var cx = nx + dx * c, cy = ny + dy * c;
-        if (!free(cx, cy)) break;
-        pts.push([cx, cy]);
+        var cl = 20 + Math.round(rand() * 2) * 20, turn = rand() < 0.5 ? 1 : -1;
+        var dx = dir[0] || turn, dy = dir[1] || turn;
+        if (!free(nx + dx * cl, ny + dy * cl, 12)) break;
+        pts.push([nx + dx * cl, ny + dy * cl]);
         dir = dir[0] ? [0, dy] : [dx, 0];
       }
       if (pts.length < 3) continue;
-      blocked.push([Math.min.apply(null, pts.map(function (p) { return p[0]; })), Math.min.apply(null, pts.map(function (p) { return p[1]; })),
-        Math.max.apply(null, pts.map(function (p) { return p[0]; })), Math.max.apply(null, pts.map(function (p) { return p[1]; }))]);
-      out.push(pts);
-    }
-    return out;
-  }
-
-  /* ---------- build the SVG ---------- */
-  function build(mode) {
-    var L = LAYOUTS[mode], c = L.cpu, half = c.s / 2, svg = [];
-    var nodeIds = Object.keys(L.nodes);
-    var blocked = [[c.x - half - 40, c.y - half - 40, c.x + half + 40, c.y + half + 40]];
-    svg.push('<svg class="board-svg" viewBox="0 0 ' + L.w + " " + L.h + '" preserveAspectRatio="' + L.aspect + '" aria-hidden="false" role="group" aria-label="Circuit board of interests">');
-    svg.push('<defs><pattern id="pcb-dots" width="40" height="40" patternUnits="userSpaceOnUse"><circle class="pcb-dot" cx="20" cy="20" r="1.6"/></pattern></defs>');
-
-    /* back layer: dot grid, decorative traces, silkscreen, mounting holes */
-    var back = ['<g class="pcb-layer" data-depth="0.45">', '<rect class="pcb-grid" x="-200" y="-200" width="' + (L.w + 400) + '" height="' + (L.h + 400) + '" fill="url(#pcb-dots)"/>'];
-
-    /* main traces first, so decoration routes around them */
-    var mains = [], i = 0;
-    nodeIds.forEach(function (id) {
-      var n = L.nodes[id], e = entry(L, n), rt = route(n.pin, e, n.type);
-      rt.pts.forEach(function (p, k) { if (k) { var q = rt.pts[k - 1]; blocked.push([Math.min(p[0], q[0]), Math.min(p[1], q[1]), Math.max(p[0], q[0]), Math.max(p[1], q[1])]); } });
-      blocked.push([n.x - L.nodeW / 2 - 10, n.y - L.nodeH / 2 - 30, n.x + L.nodeW / 2 + 10, n.y + L.nodeH / 2 + 10]);
-      /* a thin companion trace from the neighbouring pin, offset along the entry side */
-      var off = (n.type === "vv" ? (n.pin[0] <= c.x ? -1 : 1) : (n.pin[1] <= c.y ? -1 : 1)) * (mode === "wide" ? 30 : 25);
-      if (n.type === "vv" && n.pin[0] === c.x) off = mode === "wide" ? 30 : 25;
-      var p2 = n.type === "vv" ? [n.pin[0] + off, n.pin[1]] : (n.type === "hh" ? [n.pin[0], n.pin[1] + off] : [n.pin[0] + off, n.pin[1]]);
-      var e2 = n.type === "vv" ? { x: e.x + off * 0.9, y: e.y } : { x: e.x, y: e.y + (off > 0 ? 18 : -18) };
-      var rt2 = route(p2, e2, n.type);
-      mains.push({ id: id, n: n, e: e, d: rt.d, d2: rt2.d, e2: e2, td: 450 + i * 130 });
-      i++;
-    });
-
-    decoTraces(L, blocked).forEach(function (pts, k) {
-      var d = "M" + pts.map(function (p) { return p[0] + " " + p[1]; }).join(" L"), td = 200 + (k % 9) * 90;
+      var xs = pts.map(function (p) { return p[0]; }), ys = pts.map(function (p) { return p[1]; });
+      blocked.push([Math.min.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, xs), Math.max.apply(null, ys)]);
       var end = pts[pts.length - 1];
-      back.push('<path class="pcb-deco pcb-trace thin" pathLength="1" d="' + d + '" style="--td:' + td + 'ms;stroke:var(--line);opacity:1"/>');
-      back.push('<circle class="pcb-via" cx="' + end[0] + '" cy="' + end[1] + '" r="6" style="--td:' + (td + 900) + 'ms"/>');
-      back.push('<circle class="pcb-via" cx="' + pts[0][0] + '" cy="' + pts[0][1] + '" r="4" style="--td:' + (td + 200) + 'ms"/>');
-    });
-    var holes = [[44, 44], [L.w - 44, 44], [44, L.h - 44], [L.w - 44, L.h - 44]];
-    back.push('<g class="pcb-decos">' + holes.map(function (h) { return '<circle class="pcb-hole" cx="' + h[0] + '" cy="' + h[1] + '" r="14"/><circle class="pcb-hole" cx="' + h[0] + '" cy="' + h[1] + '" r="7"/>'; }).join("") + "</g>");
-    /* edge connector under the CPU */
-    var fingers = [], fy = mode === "wide" ? L.h - 70 : c.y + half + 120, fx0 = c.x - 105;
-    for (var f = 0; f < 8; f++) {
-      var fx = fx0 + f * 30;
-      fingers.push('<path class="pcb-trace thin" pathLength="1" style="--td:' + (900 + f * 60) + 'ms" d="M' + (c.x - 105 + f * 30) + " " + (c.y + half + 14) + " V" + (fy - 30) + '"/>');
-      fingers.push('<rect class="pcb-via" x="' + (fx - 8) + '" y="' + (fy - 30) + '" width="16" height="44" rx="4" style="--td:' + (1500 + f * 60) + 'ms"/>');
+      back.push('<path class="d-trace" d="M' + pts.map(function (p) { return p[0] + " " + p[1]; }).join(" L") + '"/>' +
+        '<circle class="d-via" cx="' + end[0] + '" cy="' + end[1] + '" r="7"/><circle class="d-via-h" cx="' + end[0] + '" cy="' + end[1] + '" r="3"/>' +
+        '<circle class="d-via" cx="' + pts[0][0] + '" cy="' + pts[0][1] + '" r="5"/>');
+      made++;
     }
-    if (mode === "wide") back.push(fingers.join(""));
-    back.push('<g class="pcb-silks">' +
-      '<text class="pcb-silk" x="' + (mode === "wide" ? c.x : 60) + '" y="' + (mode === "wide" ? L.h - 106 : L.h - 40) + '" text-anchor="' + (mode === "wide" ? "middle" : "start") + '">J1 · NABHYARAJ SONAGARA · REV 11.26</text>' +
-      '<text class="pcb-silk" x="' + (L.w - 60) + '" y="78" text-anchor="end">AHMEDABAD · IN</text></g>');
+    /* scattered resistors and capacitors */
+    for (var m = 0, t2 = 0; m < (mode === "wide" ? 22 : 14) && t2 < 900; t2++) {
+      var sx = Math.round(rand() * L.w), sy = Math.round(rand() * L.h);
+      if (!free(sx, sy, 22)) continue;
+      blocked.push([sx - 20, sy - 20, sx + 20, sy + 20]);
+      var rot = rand() < 0.5 ? 0 : 90, cap = rand() < 0.4;
+      back.push('<g transform="translate(' + sx + " " + sy + ") rotate(" + rot + ')"><rect class="' + (cap ? "smd-c" : "smd-r") + '" x="-11" y="-6" width="22" height="12" rx="2"/>' +
+        '<rect class="p-gold" x="-14" y="-6" width="6" height="12" rx="1"/><rect class="p-gold" x="8" y="-6" width="6" height="12" rx="1"/></g>' +
+        '<text class="pcb-silk-s" x="' + (sx + (rot ? 14 : -14)) + '" y="' + (sy + (rot ? 4 : -12)) + '">' + (cap ? "C" : "R") + (m + 3) + "</text>");
+      m++;
+    }
+    [[50, 50], [L.w - 50, 50], [50, L.h - 50], [L.w - 50, L.h - 50]].forEach(function (h) {
+      back.push('<circle class="p-gold" cx="' + h[0] + '" cy="' + h[1] + '" r="20"/><circle class="pcb-mhole" cx="' + h[0] + '" cy="' + h[1] + '" r="11"/>');
+    });
+    back.push('<text class="pcb-silk-l" x="' + (L.w / 2) + '" y="' + (L.h - 30) + '" text-anchor="middle">NABHYARAJ-SONAGARA.GITHUB.IO · REV 11.26</text>' +
+      '<text class="pcb-silk-l" x="86" y="58">MADE IN AHMEDABAD</text>');
     back.push("</g>");
     svg.push(back.join(""));
 
-    /* front layer: traces, CPU, nodes */
-    var front = ['<g class="pcb-layer" data-depth="1">'];
-    mains.forEach(function (m) {
-      front.push('<path class="pcb-trace thin" pathLength="1" d="' + m.d2 + '" style="--td:' + (m.td + 160) + 'ms"/>');
-      front.push('<circle class="pcb-via" cx="' + r(m.e2.x) + '" cy="' + r(m.e2.y) + '" r="5" style="--td:' + (m.td + 1300) + 'ms"/>');
-      front.push('<path class="pcb-trace main" data-trace="' + m.id + '" pathLength="1" d="' + m.d + '" style="--td:' + m.td + 'ms"/>');
-      front.push('<circle class="pcb-end" data-end="' + m.id + '" cx="' + r(m.e.x) + '" cy="' + r(m.e.y) + '" r="8" style="--td:' + (m.td + 1150) + 'ms"/>');
+    /* front layer: traces, CPU, parts */
+    var front = ['<g class="pcb-layer pcb-front" data-depth="1">'];
+    mains.forEach(function (t) {
+      front.push('<path class="t-thin" d="' + t.d2 + '"/><circle class="d-via" cx="' + r(t.e2.x) + '" cy="' + r(t.e2.y) + '" r="7"/><circle class="d-via-h" cx="' + r(t.e2.x) + '" cy="' + r(t.e2.y) + '" r="3"/>');
+      front.push('<path class="t-base" d="' + t.d + '"/>');
+      front.push('<path class="t-glow" data-glow="' + t.id + '" pathLength="1" d="' + t.d + '"/>');
+      front.push('<path class="t-lit" data-trace="' + t.id + '" pathLength="1" d="' + t.d + '"/>');
     });
 
     /* CPU */
-    var cpu = ['<g class="pcb-cpu-g"><g class="pcb-cpu" tabindex="0" role="button" data-node="physics" aria-label="Physics, the core">'];
-    for (var k = -3; k <= 3; k++) {
-      var o = k * (c.s / 8);
-      cpu.push('<rect class="pcb-cpu-pin" data-pin="t' + k + '" x="' + (c.x + o - 5) + '" y="' + (c.y - half - 18) + '" width="10" height="20" rx="2"/>');
-      cpu.push('<rect class="pcb-cpu-pin" data-pin="b' + k + '" x="' + (c.x + o - 5) + '" y="' + (c.y + half - 2) + '" width="10" height="20" rx="2"/>');
-      cpu.push('<rect class="pcb-cpu-pin" data-pin="l' + k + '" x="' + (c.x - half - 18) + '" y="' + (c.y + o - 5) + '" width="20" height="10" rx="2"/>');
-      cpu.push('<rect class="pcb-cpu-pin" data-pin="r' + k + '" x="' + (c.x + half - 2) + '" y="' + (c.y + o - 5) + '" width="20" height="10" rx="2"/>');
+    var cpu = ['<g class="pcb-cpu" data-node="physics" tabindex="0" role="button" aria-label="Physics, the CPU">'];
+    cpu.push('<rect class="p-cpu-glow" x="' + (c.x - half - 16) + '" y="' + (c.y - half - 16) + '" width="' + (c.s + 32) + '" height="' + (c.s + 32) + '" rx="28"/>');
+    for (var q = -4; q <= 4; q++) {
+      var o = q * (c.s / 10);
+      cpu.push('<rect class="p-gold" x="' + (c.x + o - 4) + '" y="' + (c.y - half - 14) + '" width="8" height="16" rx="1.5"/><rect class="p-gold" x="' + (c.x + o - 4) + '" y="' + (c.y + half - 2) + '" width="8" height="16" rx="1.5"/>');
+      cpu.push('<rect class="p-gold" x="' + (c.x - half - 14) + '" y="' + (c.y + o - 4) + '" width="16" height="8" rx="1.5"/><rect class="p-gold" x="' + (c.x + half - 2) + '" y="' + (c.y + o - 4) + '" width="16" height="8" rx="1.5"/>');
     }
-    cpu.push('<rect class="pcb-cpu-body" x="' + (c.x - half) + '" y="' + (c.y - half) + '" width="' + c.s + '" height="' + c.s + '" rx="18"/>');
-    cpu.push('<rect class="pcb-cpu-die" x="' + (c.x - half + 24) + '" y="' + (c.y - half + 24) + '" width="' + (c.s - 48) + '" height="' + (c.s - 48) + '" rx="10"/>');
-    cpu.push('<circle class="pcb-cpu-mark" cx="' + (c.x - half + 42) + '" cy="' + (c.y - half + 42) + '" r="6"/>');
-    cpu.push('<text class="pcb-cpu-name" x="' + c.x + '" y="' + (c.y + c.name * 0.32) + '" text-anchor="middle" style="font-size:' + c.name + 'px">' + esc(data.core.name) + "</text>");
-    cpu.push('<text class="pcb-cpu-sub" x="' + c.x + '" y="' + (c.y + c.name * 0.32 + 32) + '" text-anchor="middle">' + esc(data.core.ref) + "</text>");
-    cpu.push("</g></g>");
+    cpu.push('<rect class="p-chip" x="' + (c.x - half) + '" y="' + (c.y - half) + '" width="' + c.s + '" height="' + c.s + '" rx="18"/>');
+    cpu.push('<rect class="p-ihs" x="' + (c.x - half + 22) + '" y="' + (c.y - half + 22) + '" width="' + (c.s - 44) + '" height="' + (c.s - 44) + '" rx="12"/>');
+    cpu.push('<path class="p-gold" d="M' + (c.x - half + 10) + " " + (c.y - half + 10) + " h18 l-18 18 Z" + '"/>');
+    cpu.push('<text class="p-cpu-name" x="' + c.x + '" y="' + r(c.y + c.s * 0.06) + '" text-anchor="middle" style="font-size:' + r(c.s * 0.19) + 'px">Physics</text>');
+    cpu.push('<text class="p-cpu-sub" x="' + c.x + '" y="' + r(c.y + c.s * 0.06 + 34) + '" text-anchor="middle">' + esc(data.core.ref) + "</text>");
+    cpu.push('<circle class="p-led p-led-cpu" cx="' + (c.x + half - 34) + '" cy="' + (c.y + half - 34) + '" r="5"/></g>');
     front.push(cpu.join(""));
 
-    /* nodes */
-    mains.forEach(function (m) {
-      var n = m.n, info = byId[m.id], w = L.nodeW, h = L.nodeH, x0 = n.x - w / 2, y0 = n.y - h / 2;
-      var name = L.useShort ? info.short : info.name, fs = name.length > 16 ? 22 : 26;
-      var g = ['<g class="pcb-node-g" style="--td:' + (m.td + 950) + 'ms"><g class="pcb-node" tabindex="0" role="button" data-node="' + m.id + '" aria-label="' + esc(info.name) + '">'];
-      var side = m.e.side, pins = [];
-      for (var q = -1.5; q <= 1.5; q++) {
-        if (side === "left" || side === "right") {
-          var px = side === "left" ? x0 - 10 : x0 + w - 2;
-          pins.push('<rect class="pcb-node-pin" x="' + px + '" y="' + r(n.y + q * 16 - 3) + '" width="12" height="6" rx="1.5"/>');
-        } else {
-          var py = side === "top" ? y0 - 10 : y0 + h - 2;
-          pins.push('<rect class="pcb-node-pin" x="' + r(n.x + q * 22 - 3) + '" y="' + py + '" width="6" height="12" rx="1.5"/>');
-        }
-      }
-      g.push(pins.join(""));
-      g.push('<rect class="pcb-node-body" x="' + x0 + '" y="' + y0 + '" width="' + w + '" height="' + h + '" rx="14"/>');
-      g.push('<text class="pcb-node-ref" x="' + (x0 + 20) + '" y="' + (y0 + 26) + '">' + esc(info.ref) + "</text>");
-      g.push('<text class="pcb-node-name" x="' + (x0 + 20) + '" y="' + (y0 + 62) + '" style="font-size:' + fs + 'px">' + esc(name) + "</text>");
-      g.push('<circle class="pcb-node-pin" cx="' + (x0 + w - 22) + '" cy="' + (y0 + 22) + '" r="4"/>');
-      g.push("</g></g>");
+    mains.forEach(function (t) {
+      var n = t.n, info = byId[t.id], x0 = n.x - L.fw / 2, y0 = n.y - L.fh / 2, sc = L.fw / 300;
+      var above = t.e.side === "bottom";
+      var nameY = above ? y0 - 46 : y0 + L.fh + 46, refY = above ? y0 - 20 : y0 + L.fh + 72;
+      if (mode === "tall") { nameY = above ? y0 - 44 : y0 + L.fh + 52; refY = above ? y0 - 16 : y0 + L.fh + 80; }
+      var g = ['<g class="pcb-part" data-node="' + t.id + '" tabindex="0" role="button" aria-label="' + esc(info.name) + ", the " + esc(info.part) + '" style="--i:' + t.i + '">'];
+      g.push('<rect class="p-court" x="' + (x0 - 14) + '" y="' + (y0 - 14) + '" width="' + (L.fw + 28) + '" height="' + (L.fh + 28) + '" rx="12"/>');
+      g.push('<g transform="translate(' + x0 + " " + y0 + ") scale(" + sc + ')">' + PARTS[info.part]() + "</g>");
+      g.push('<text class="p-name" x="' + x0 + '" y="' + nameY + '">' + esc(mode === "tall" ? info.short : info.name) + "</text>");
+      g.push('<text class="p-ref" x="' + x0 + '" y="' + refY + '">' + esc(info.ref) + (mode === "wide" ? " · " + esc(info.role.toUpperCase()) : "") + "</text>");
+      g.push('<circle class="p-gold" cx="' + r(t.e.x) + '" cy="' + r(t.e.y) + '" r="11"/><circle class="d-via-h" cx="' + r(t.e.x) + '" cy="' + r(t.e.y) + '" r="4.5"/>');
+      g.push("</g>");
       front.push(g.join(""));
     });
-
-    front.push('<g class="pcb-pulse-g" style="opacity:0"><circle class="pcb-pulse-glow" r="16"/><circle class="pcb-pulse" r="6"/></g>');
-    front.push("</g>");
+    front.push('<g class="t-heads"></g></g>');
     svg.push(front.join(""));
     svg.push("</svg>");
     stage.innerHTML = svg.join("");
@@ -235,190 +257,139 @@
     wire();
   }
 
-  /* ---------- interaction ---------- */
-  var els = {};
+  /* ---------- wiring and selection ---------- */
   function wire() {
     var s = stage.querySelector("svg");
-    els = { svg: s, layers: Array.prototype.slice.call(s.querySelectorAll(".pcb-layer")), traces: {}, ends: {}, nodes: {}, pulse: s.querySelector(".pcb-pulse-g") };
-    Array.prototype.forEach.call(s.querySelectorAll("[data-trace]"), function (p) { els.traces[p.getAttribute("data-trace")] = p; });
-    Array.prototype.forEach.call(s.querySelectorAll("[data-end]"), function (p) { els.ends[p.getAttribute("data-end")] = p; });
-    Array.prototype.forEach.call(s.querySelectorAll("[data-node]"), function (g) {
+    els = { svg: s, layers: [].slice.call(s.querySelectorAll(".pcb-layer")), lit: {}, glow: {}, parts: {}, heads: s.querySelector(".t-heads") };
+    [].forEach.call(s.querySelectorAll("[data-trace]"), function (p) { els.lit[p.getAttribute("data-trace")] = p; });
+    [].forEach.call(s.querySelectorAll("[data-glow]"), function (p) { els.glow[p.getAttribute("data-glow")] = p; });
+    [].forEach.call(s.querySelectorAll("[data-node]"), function (g) {
       var id = g.getAttribute("data-node");
-      els.nodes[id] = g;
-      g.addEventListener("click", function () { select(id); });
-      g.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") select(id); });
-      g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(id); } });
-      g.addEventListener("focus", function () { select(id); });
+      els.parts[id] = g;
+      g.addEventListener("click", function () { select(id, true); });
+      g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(id, true); } });
     });
-    select(state.sel || "physics", true);
+    if (state.booted) { setLit(1); powerAll(); }
+    mark(state.sel);
   }
 
-  function linkHtml(l) {
-    var x = l.external ? ' target="_blank" rel="noreferrer"' : "";
-    return '<a class="kn-link" href="' + l.href + '"' + x + ">" + esc(l.label) + (l.external ? '<span class="kn-link-ext" aria-hidden="true">↗</span>' : "") + "</a>";
+  function setLit(k) {
+    Object.keys(els.lit).forEach(function (id) {
+      els.lit[id].style.strokeDashoffset = 1 - k;
+      els.glow[id].style.strokeDashoffset = 1 - k;
+    });
+  }
+  function powerAll() {
+    els.svg.classList.add("booted");
+    Object.keys(els.parts).forEach(function (id) { els.parts[id].classList.add("on"); });
   }
 
-  var swapTimer = 0;
-  function select(id, instant) {
-    if (state.sel === id && !instant) return;
+  function mark(id) {
+    Object.keys(els.parts).forEach(function (k) { els.parts[k].classList.toggle("sel", k === id); });
+    Object.keys(els.lit).forEach(function (k) {
+      els.lit[k].classList.toggle("sel", k === id);
+      els.glow[k].classList.toggle("sel", k === id);
+    });
+  }
+
+  function chip(it) {
+    var x = /^https?:/.test(it.href) ? ' target="_blank" rel="noreferrer"' : "";
+    return '<a class="pcb-chip" href="' + it.href + '"' + x + "><span>" + esc(it.title) + "</span><em>" + esc(it.kind) + "</em></a>";
+  }
+  function fillBar(id) {
+    var info = byId[id];
+    bar.innerHTML = '<div class="pcb-bar-id"><span class="label">' + esc(info.ref) + " · " + esc(info.role) + "</span><h2>" + esc(info.name) + "</h2></div>" +
+      '<p class="pcb-bar-text">' + esc(info.text) + "</p>" +
+      '<div class="pcb-bar-work"><span class="label">' + (info.related.length ? "Wired to" : "Wired to nothing yet") + "</span>" +
+      (info.related.length ? '<div class="pcb-chips">' + info.related.map(chip).join("") + "</div>" : "") + "</div>";
+  }
+  var swap = 0;
+  function select(id, pulse) {
+    var changed = state.sel !== id;
     state.sel = id;
-    var info = byId[id], core = id === "physics";
-    els.svg.classList.toggle("has-sel", !core);
-    Object.keys(els.traces).forEach(function (k) {
-      els.traces[k].classList.toggle("sel", k === id);
-      els.ends[k].classList.toggle("sel", k === id);
-    });
-    Object.keys(els.nodes).forEach(function (k) { els.nodes[k].classList.toggle("sel", k === id); });
-    function fill() {
-      read.innerHTML = '<div><span class="label">' + esc(info.ref) + (core ? "" : " · wired to Physics") + "</span><h3>" + esc(info.name) + "</h3></div><p>" + esc(info.text) + "</p>" +
-        (info.links && info.links.length ? '<div class="row-actions">' + info.links.map(linkHtml).join("") + "</div>" : "");
-      read.classList.remove("swap");
+    mark(id);
+    if (changed) {
+      clearTimeout(swap);
+      if (reduced) fillBar(id);
+      else { bar.classList.add("swap"); swap = setTimeout(function () { fillBar(id); bar.classList.remove("swap"); }, 200); }
     }
-    clearTimeout(swapTimer);
-    if (instant || reduced) { fill(); return; }
-    read.classList.add("swap");
-    swapTimer = setTimeout(fill, 220);
+    if ((pulse || changed) && state.booted && !reduced && id !== "physics") send(id, false, 1300);
   }
 
-  /* ---------- the lime pulse and the floating drift ---------- */
-  var pulse = { id: null, t0: 0, dur: 0, len: 0, wait: 0, idx: 0 };
-  var px = 0, py = 0, tx = 0, ty = 0, hasPointer = false;
-  function nextPulse(now) {
-    var ids = Object.keys(els.traces);
-    var id = state.sel && state.sel !== "physics" ? state.sel : ids[pulse.idx++ % ids.length];
-    var path = els.traces[id];
-    pulse.id = id; pulse.len = path.getTotalLength(); pulse.t0 = now;
-    pulse.dur = Math.max(1500, pulse.len * 3.2);
-  }
+  /* ---------- pulses ---------- */
+  var heads = [];
   function ease(k) { return k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+  function send(id, back, dur) {
+    var path = els.lit[id];
+    if (!path) return;
+    var c = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    c.setAttribute("class", "t-head" + (back ? " small" : ""));
+    c.innerHTML = '<circle class="t-head-glow" r="' + (back ? 9 : 16) + '"/><circle class="t-head-core" r="' + (back ? 4 : 7) + '"/>';
+    els.heads.appendChild(c);
+    heads.push({ id: id, el: c, len: path.getTotalLength(), t0: performance.now(), dur: dur, back: back });
+  }
+
+  var px = 0, py = 0, tx = 0, ty = 0, hasPointer = false, nextPacket = 0;
   function loop(now) {
-    if (!state.open) return;
-    /* drift: follow the pointer slowly; with no pointer, breathe on its own */
-    var gx = hasPointer ? tx : Math.sin(now / 4200) * 0.5, gy = hasPointer ? ty : Math.cos(now / 5100) * 0.5;
-    px += (gx - px) * 0.035; py += (gy - py) * 0.035;
-    els.layers.forEach(function (l) {
-      var d = parseFloat(l.getAttribute("data-depth"));
-      l.setAttribute("transform", "translate(" + r(-px * 18 * d) + " " + r(-py * 14 * d) + ")");
-    });
-    if (pulse.ready) {
-      if (!pulse.id) {
-        if (now >= pulse.wait) nextPulse(now);
-      } else {
-        var k = Math.min(1, (now - pulse.t0) / pulse.dur), path = els.traces[pulse.id];
-        var pt = path.getPointAtLength(ease(k) * pulse.len);
-        els.pulse.setAttribute("transform", "translate(" + r(pt.x) + " " + r(pt.y) + ")");
-        els.pulse.style.opacity = k < 0.08 ? k / 0.08 : (k > 0.94 ? (1 - k) / 0.06 : 1);
-        if (k >= 1) {
-          var node = els.nodes[pulse.id];
-          if (node) { node.classList.add("ping"); setTimeout(function () { node.classList.remove("ping"); }, 900); }
-          pulse.id = null; pulse.wait = now + 700;
-          els.pulse.style.opacity = 0;
-        }
-      }
-    }
-    state.raf = requestAnimationFrame(loop);
-  }
-  board.addEventListener("pointermove", function (e) {
-    if (e.pointerType !== "mouse") return;
-    hasPointer = true;
-    tx = (e.clientX / window.innerWidth) * 2 - 1;
-    ty = (e.clientY / window.innerHeight) * 2 - 1;
-  });
-
-  /* ---------- open and close ---------- */
-  function modeFor() { var s = stage.getBoundingClientRect(); return s.width / Math.max(1, s.height) > 1.05 ? "wide" : "tall"; }
-  function cssVar(n) { return getComputedStyle(root).getPropertyValue(n).trim(); }
-  function rectClip(el) {
-    var b = el.getBoundingClientRect(), W = window.innerWidth, H = window.innerHeight;
-    return "inset(" + r(b.top) + "px " + r(W - b.right) + "px " + r(H - b.bottom) + "px " + r(b.left) + "px round 16px)";
-  }
-  var FULL = "inset(0px 0px 0px 0px round 0px)";
-  var anim = null, drawTimer = 0, pulseTimer = 0;
-
-  function open(opener, animate) {
-    if (state.open) return;
-    state.open = true; state.opener = opener || openers[0];
-    var sbw = window.innerWidth - root.clientWidth;
-    root.style.overflow = "hidden"; if (sbw) root.style.paddingRight = sbw + "px";
-    board.hidden = false;
-    board.classList.remove("drawn", "closing");
-    build(modeFor());
-    pulse.ready = false; pulse.id = null; hasPointer = false;
-    var go = animate && !reduced && board.animate && state.opener;
-    if (go) {
-      if (anim) anim.cancel();
-      anim = board.animate([
-        { clipPath: rectClip(state.opener), backgroundColor: cssVar("--surface") },
-        { clipPath: FULL, backgroundColor: cssVar("--ground") }
-      ], { duration: 1400, easing: GROW });
-      Array.prototype.forEach.call(board.querySelectorAll(".board-fade"), function (el, i) {
-        el.animate([{ opacity: 0, transform: "translateY(14px)" }, { opacity: 1, transform: "none" }], { duration: 1000, delay: 650 + i * 90, easing: FLOAT, fill: "backwards" });
+    if (!reduced) {
+      var gx = hasPointer ? tx : Math.sin(now / 4600) * 0.4, gy = hasPointer ? ty : Math.cos(now / 5300) * 0.4;
+      px += (gx - px) * 0.03; py += (gy - py) * 0.03;
+      els.layers.forEach(function (l) {
+        var d = parseFloat(l.getAttribute("data-depth"));
+        l.setAttribute("transform", "translate(" + r(-px * 14 * d) + " " + r(-py * 10 * d) + ")");
       });
     }
-    clearTimeout(drawTimer); clearTimeout(pulseTimer);
-    drawTimer = setTimeout(function () { board.classList.add("drawn"); }, go ? 700 : 30);
-    pulseTimer = setTimeout(function () { pulse.ready = !reduced; pulse.wait = 0; }, go ? 3200 : 600);
-    cancelAnimationFrame(state.raf);
-    state.raf = requestAnimationFrame(loop);
-    setTimeout(function () { closeBtn.focus({ preventScroll: true }); }, go ? 800 : 0);
-  }
-
-  function finish() {
-    board.hidden = true;
-    board.classList.remove("drawn", "closing");
-    if (anim) { anim.cancel(); anim = null; }
-    root.style.overflow = ""; root.style.paddingRight = "";
-    state.open = false;
-    cancelAnimationFrame(state.raf);
-    if (state.opener) state.opener.focus({ preventScroll: true });
-  }
-
-  function doClose() {
-    if (!state.open) return;
-    clearTimeout(drawTimer); clearTimeout(pulseTimer);
-    pulse.ready = false;
-    if (reduced || !board.animate || !state.opener) { finish(); return; }
-    board.classList.add("closing");
-    if (anim) anim.cancel();
-    anim = board.animate([
-      { clipPath: FULL, backgroundColor: cssVar("--ground") },
-      { clipPath: rectClip(state.opener), backgroundColor: cssVar("--surface") }
-    ], { duration: 850, delay: 120, easing: MOVE, fill: "forwards" });
-    anim.onfinish = finish;
-  }
-
-  function requestClose() {
-    if (state.pushed) { state.pushed = false; history.back(); }
-    else { doClose(); if (location.hash === "#fields") history.replaceState(null, "", location.pathname + location.search); }
-  }
-
-  openers.forEach(function (o) {
-    o.addEventListener("click", function () {
-      open(o, true);
-      if (location.hash !== "#fields") { history.pushState({ board: 1 }, "", "#fields"); state.pushed = true; }
-    });
-  });
-  closeBtn.addEventListener("click", requestClose);
-  window.addEventListener("popstate", function () {
-    if (location.hash === "#fields") { if (!state.open) open(openers[0], false); }
-    else if (state.open) { state.pushed = false; doClose(); }
-  });
-  document.addEventListener("keydown", function (e) {
-    if (!state.open) return;
-    if (e.key === "Escape") { e.preventDefault(); requestClose(); return; }
-    if (e.key === "Tab") {
-      var f = Array.prototype.slice.call(board.querySelectorAll('button, a[href], [tabindex="0"]'));
-      if (!f.length) return;
-      var i = f.indexOf(document.activeElement);
-      if (e.shiftKey && (i <= 0)) { e.preventDefault(); f[f.length - 1].focus(); }
-      else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+    for (var i = heads.length - 1; i >= 0; i--) {
+      var h = heads[i], k = Math.min(1, (now - h.t0) / h.dur), e = ease(k);
+      var path = els.lit[h.id];
+      if (!path) { h.el.remove(); heads.splice(i, 1); continue; }
+      var pt = path.getPointAtLength((h.back ? 1 - e : e) * h.len);
+      h.el.setAttribute("transform", "translate(" + r(pt.x) + " " + r(pt.y) + ")");
+      h.el.style.opacity = k < 0.06 ? k / 0.06 : (k > 0.92 ? (1 - k) / 0.08 : 1);
+      if (h.boot) setLit(e);
+      if (k >= 1) {
+        h.el.remove(); heads.splice(i, 1);
+        if (h.boot) { setLit(1); powerAll(); state.booted = true; nextPacket = now + 1200; }
+      }
     }
+    if (state.booted && !reduced && now > nextPacket) {
+      var ids = Object.keys(els.lit), id = ids[Math.floor(Math.random() * ids.length)];
+      send(id, Math.random() < 0.5, 1600 + Math.random() * 900);
+      nextPacket = now + 700 + Math.random() * 900;
+    }
+    state.raf = requestAnimationFrame(loop);
+  }
+
+  function boot() {
+    stage.classList.add("go");
+    if (reduced) { setLit(1); powerAll(); state.booted = true; return; }
+    setTimeout(function () { els.parts.physics && els.parts.physics.classList.add("on"); }, 700);
+    setTimeout(function () {
+      var t0 = performance.now();
+      Object.keys(els.lit).forEach(function (id, i) {
+        send(id, false, 1900);
+        if (i === 0) heads[heads.length - 1].boot = true;
+        heads[heads.length - 1].t0 = t0;
+      });
+    }, 1150);
+  }
+
+  stage.addEventListener("pointermove", function (e) {
+    if (e.pointerType !== "mouse") return;
+    hasPointer = true;
+    var b = stage.getBoundingClientRect();
+    tx = ((e.clientX - b.left) / b.width) * 2 - 1; ty = ((e.clientY - b.top) / b.height) * 2 - 1;
   });
+  stage.addEventListener("pointerleave", function () { hasPointer = false; });
+
+  function modeFor() { var b = stage.getBoundingClientRect(); return b.width / Math.max(1, b.height) > 1.05 ? "wide" : "tall"; }
   var rz = 0;
   window.addEventListener("resize", function () {
-    if (!state.open) return;
     clearTimeout(rz);
-    rz = setTimeout(function () { var m = modeFor(); if (m !== state.mode) build(m); }, 150);
+    rz = setTimeout(function () { var m = modeFor(); if (m !== state.mode) { heads.forEach(function (h) { h.el.remove(); }); heads = []; state.booted = true; build(m); } }, 150);
   });
-  if (location.hash === "#fields" && openers.length) open(openers[0], false);
+
+  build(modeFor());
+  fillBar(state.sel);
+  requestAnimationFrame(function () { boot(); state.raf = requestAnimationFrame(loop); });
 })();

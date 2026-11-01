@@ -8,25 +8,31 @@
   --ink: #f2efe6;
   --ink-muted: #a19d92;
   --signal: #ff5b2e;
+  --signal-text: #ff5b2e;
   --signal-deep: #6a2410;
   --lime: #d7ff3d;
   --on-accent: var(--ground);
+  --on-lime: var(--ground);
   --focus: var(--lime);
   --cursor-blend: difference;
 }
 [data-theme="light"] {
   color-scheme: light;
-  --ground: #f4f1ea;
-  --surface: #ebe7de;
-  --line: #d6d1c4;
-  --ink: #141412;
-  --ink-muted: #5f5b52;
-  --signal: #b8330c;
-  --signal-deep: #f6d3c3;
-  --lime: #5e8c00;
-  --on-accent: var(--ground);
+  /* Light: white cards on warm paper, the same vivid orange as dark for fills,
+     ink text on it, and a deeper orange only where orange is small text. */
+  --ground: #f6f2ea;
+  --surface: #ffffff;
+  --line: #e2dbcc;
+  --ink: #131311;
+  --ink-muted: #55514a;
+  --signal: #ff5b2e;
+  --signal-text: #cf3509;
+  --signal-deep: #ffd6c4;
+  --lime: #c9f53c;
+  --on-accent: var(--ink);
+  --on-lime: var(--ink);
   --focus: var(--ink);
-  --cursor-blend: normal;
+  --cursor-blend: multiply;
 }
 :root {
   --space-1: 8px;
@@ -86,7 +92,7 @@ a { color: inherit; }
 .body { font-size: 16px; line-height: 26px; max-width: 38rem; }
 .label { font-family: var(--font-mono); font-size: 13px; line-height: 16px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
 .muted { color: var(--ink-muted); }
-.hl { color: var(--signal); }
+.hl { color: var(--signal-text); }
 .prose { display: flex; flex-direction: column; gap: var(--space-2); max-width: 38rem; }
 .prose p { color: var(--ink-muted); }
 .prose strong { color: var(--ink); font-weight: 600; }
@@ -112,7 +118,7 @@ a { color: inherit; }
 .site-head.scrolled { background: color-mix(in srgb, var(--ground) 82%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: var(--line); }
 .bar { display: flex; align-items: center; gap: var(--space-2); min-height: 76px; }
 .mark { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -.03em; text-decoration: none; color: var(--ink); padding: 8px 0; }
-.mark span { color: var(--signal); }
+.mark span { color: var(--signal-text); }
 .bar .kn-nav { margin-left: auto; }
 @media (max-width: 720px) {
   .bar { flex-wrap: wrap; gap: 0 var(--space-1); padding-bottom: 10px; min-height: 0; }
@@ -157,11 +163,11 @@ a { color: inherit; }
   transition: background-size var(--dur-base) var(--ease-float); }
 .kn-link:hover { background-position: 0 100%, 0 100%; background-size: 100% 2px, 100% 1px; }
 .kn-link-ext { display: inline-block; margin-left: .15em; color: var(--ink-muted); transition: transform var(--dur-base) var(--ease-float), color var(--dur-fast) var(--ease-out); }
-.kn-link:hover .kn-link-ext { transform: translate(2px, -2px); color: var(--signal); }
+.kn-link:hover .kn-link-ext { transform: translate(2px, -2px); color: var(--signal-text); }
 
 /* ---------- Tag ---------- */
 .kn-tag { display: inline-flex; align-items: center; gap: var(--space-1); height: 24px; padding: 0 var(--space-1); border: 1px solid var(--line); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-muted); white-space: nowrap; }
-.kn-tag-signal { background: var(--signal-deep); border-color: var(--signal-deep); color: var(--ink); }
+.kn-tag-signal { background: var(--signal); border-color: var(--signal); color: var(--on-accent); }
 .kn-tag-now { color: var(--ink); height: 32px; padding: 0 12px; border-radius: var(--radius-pill); background: var(--surface); }
 .kn-tag-pulse { position: relative; width: 8px; height: 8px; border-radius: var(--radius-pill); background: var(--lime); flex: none; }
 .kn-tag-pulse::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--lime); animation: kn-pulse 2.4s var(--ease-out) infinite; }
@@ -172,7 +178,7 @@ a { color: inherit; }
 .kn-hero { margin: 0; font-family: var(--font-display); font-size: clamp(48px, 10vw, 96px); line-height: .92; font-weight: 700; letter-spacing: -.04em; color: var(--ink); }
 .kn-hero.kn-hero-md { font-size: clamp(44px, 8vw, 80px); }
 .kn-hero-word { display: inline-block; white-space: nowrap; }
-.kn-hero-hl { color: var(--signal); }
+.kn-hero-hl { color: var(--signal-text); }
 .kn-hero-mask { display: inline-block; clip-path: inset(-0.5em -0.3em 0 -0.3em); padding-bottom: .12em; margin-bottom: -.12em; vertical-align: top; }
 .kn-hero-ch { display: inline-block; animation: kn-rise var(--dur-hero) var(--ease-float) both; animation-delay: calc(120ms + var(--i) * var(--stagger)); }
 @keyframes kn-rise { from { transform: translateY(115%) rotate(4deg); } }
@@ -197,13 +203,13 @@ a { color: inherit; }
 .kn-card:hover .kn-card-media > svg { transform: scale(1.045); }
 .kn-tone-signal { background: var(--signal); --v-a: var(--on-accent); --v-b: color-mix(in srgb, var(--on-accent) 38%, var(--signal)); --v-c: color-mix(in srgb, var(--on-accent) 14%, var(--signal)); }
 .kn-tone-ink { background: var(--ink); --v-a: var(--signal); --v-b: color-mix(in srgb, var(--ground) 55%, var(--ink)); --v-c: color-mix(in srgb, var(--ground) 12%, var(--ink)); }
-.kn-tone-deep { background: var(--signal-deep); --v-a: var(--signal); --v-b: color-mix(in srgb, var(--ink) 60%, var(--signal-deep)); --v-c: color-mix(in srgb, var(--ink) 16%, var(--signal-deep)); }
-.kn-tone-surface { background: var(--surface); --v-a: var(--signal); --v-b: var(--ink-muted); --v-c: var(--line); }
+.kn-tone-deep { background: var(--lime); --v-a: var(--on-lime); --v-b: color-mix(in srgb, var(--on-lime) 50%, var(--lime)); --v-c: color-mix(in srgb, var(--on-lime) 14%, var(--lime)); }
+.kn-tone-surface { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); --v-a: var(--signal); --v-b: var(--ink-muted); --v-c: var(--line); }
 .kn-card-body { padding-top: var(--space-2); }
 .kn-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1); }
 .kn-card-year { margin-right: var(--space-1); font-family: var(--font-mono); font-size: 13px; line-height: 16px; letter-spacing: .04em; color: var(--ink-muted); text-transform: uppercase; }
 .kn-card-title { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-2); margin: var(--space-2) 0 0; font-family: var(--font-display); font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -.01em; }
-.kn-card-arrow { color: var(--signal); flex: none; transition: transform var(--dur-base) var(--ease-float); }
+.kn-card-arrow { color: var(--signal-text); flex: none; transition: transform var(--dur-base) var(--ease-float); }
 .kn-card:hover .kn-card-arrow { transform: translate(4px, -4px); }
 .kn-card-summary { margin: var(--space-1) 0 0; max-width: 38rem; color: var(--ink-muted); }
 
@@ -217,6 +223,18 @@ a { color: inherit; }
 html.kn-cursor-on, html.kn-cursor-on * { cursor: none !important; }
 html.kn-cursor-on :is(input, textarea, select, [contenteditable]) { cursor: auto !important; }
 
+/* ---------- light theme: markers instead of orange text ---------- */
+[data-theme="light"] .kn-hero-hl { color: var(--ink); background: linear-gradient(var(--signal), var(--signal)) no-repeat 0 78% / 0% .36em; animation: kn-marker 1.1s var(--ease-float) .95s forwards; }
+[data-theme="light"] .hl { color: var(--ink); background: linear-gradient(var(--signal), var(--signal)) no-repeat 0 82% / 100% .34em; }
+@keyframes kn-marker { to { background-size: 100% .36em; } }
+[data-theme="light"] .kn-tag-pulse { box-shadow: 0 0 0 1.5px var(--ink); }
+[data-theme="light"] .kn-marquee-dot { background: var(--signal); }
+[data-theme="light"] .kn-marquee { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+[data-theme="light"] .kn-nav, [data-theme="light"] .theme-btn { box-shadow: 0 1px 0 var(--line); }
+[data-theme="light"] .kn-card-media { box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 12px 32px -18px rgba(60, 40, 20, .35); }
+[data-theme="light"] .aside { border-left-width: 3px; }
+[data-theme="light"] .kn-tone-surface { box-shadow: inset 0 0 0 1px var(--line), 0 12px 32px -18px rgba(60, 40, 20, .35); }
+
 /* ---------- hero blocks ---------- */
 .hero { padding-top: clamp(40px, 8vw, 104px); padding-bottom: var(--section); }
 .hero .kn-tag-now { margin-bottom: var(--space-4); }
@@ -228,7 +246,7 @@ html.kn-cursor-on :is(input, textarea, select, [contenteditable]) { cursor: auto
 .rows { border-top: 1px solid var(--line); }
 .row { display: grid; grid-template-columns: 120px minmax(0, 1fr) auto; gap: 4px var(--space-4); align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--line); text-decoration: none; color: inherit; transition: padding var(--dur-base) var(--ease-float); }
 a.row:hover { padding-left: 12px; padding-right: 12px; }
-a.row:hover .row-t { color: var(--signal); }
+a.row:hover .row-t { color: var(--signal-text); }
 .row .label { color: var(--ink-muted); }
 .row-t { display: block; font-family: var(--font-display); font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -.01em; transition: color var(--dur-fast) var(--ease-out); }
 .row-d { display: block; color: var(--ink-muted); margin-top: 4px; }
@@ -240,7 +258,7 @@ a.row:hover .row-t { color: var(--signal); }
 .sheet dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 12px var(--space-2); }
 .sheet dt { font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-muted); padding-top: 2px; }
 .sheet dd { margin: 0; text-align: right; }
-.sheet dd.ok { color: var(--signal); }
+.sheet dd.ok { color: var(--signal-text); }
 .sheet .row-actions { margin-top: var(--space-4); }
 
 /* ---------- project detail ---------- */
@@ -251,7 +269,7 @@ a.row:hover .row-t { color: var(--signal); }
 @media (max-width: 860px) { .p-head { grid-template-columns: 1fr; } }
 .p-head .body-lg { margin-top: var(--space-2); color: var(--ink-muted); }
 .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--space-4); }
-.note h2 { font-family: var(--font-mono); font-size: 13px; line-height: 16px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--signal); margin-bottom: var(--space-1); }
+.note h2 { font-family: var(--font-mono); font-size: 13px; line-height: 16px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--signal-text); margin-bottom: var(--space-1); }
 .note p { color: var(--ink-muted); }
 .pager { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
 .pager a { display: block; padding: var(--space-4); border: 1px solid var(--line); border-radius: var(--radius-md); text-decoration: none; transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-base) var(--ease-out); }
@@ -291,104 +309,7 @@ a.row:hover .row-t { color: var(--signal); }
 .tl-item .row-t { margin-top: 6px; }
 .tl-item .row-d { max-width: 38rem; }
 .tl-item a.row-t { text-decoration: none; }
-.tl-item a.row-t:hover { color: var(--signal); }
-
-/* ---------- fields card (opens the circuit board) ---------- */
-.fields-card { appearance: none; position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-4); align-items: center; width: 100%; text-align: left; font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: var(--space-4); cursor: pointer; overflow: hidden; transition: border-color var(--dur-base) var(--ease-out), transform var(--dur-slow) var(--ease-float); }
-.fields-card:hover { border-color: var(--ink-muted); transform: translateY(-4px); }
-.fields-card .label { color: var(--ink-muted); }
-.fields-card .heading { margin: var(--space-1) 0 var(--space-2); }
-.fields-card .tags { margin-bottom: var(--space-2); }
-.fields-open { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--signal) !important; }
-.fields-open span { transition: transform var(--dur-base) var(--ease-float); }
-.fields-card:hover .fields-open span { transform: translate(3px, -3px); }
-.fields-chip { width: 168px; height: 168px; color: var(--ink-muted); }
-.fields-chip .fc-trace { fill: none; stroke: var(--line); stroke-width: 2; }
-.fields-chip .fc-run { fill: none; stroke: var(--signal); stroke-width: 2; stroke-dasharray: .14 .86; animation: fc-run 4.8s linear infinite; animation-delay: var(--d, 0s); opacity: .85; }
-.fields-chip .fc-body { fill: var(--ground); stroke: var(--ink-muted); stroke-width: 2; }
-.fields-chip .fc-pin { fill: var(--ink-muted); }
-.fields-chip .fc-pad { fill: var(--surface); stroke: var(--ink-muted); stroke-width: 1.5; }
-.fields-chip text { font-family: var(--font-display); font-weight: 700; font-size: 12px; fill: var(--ink); letter-spacing: -.02em; }
-.fields-card:hover .fc-body { stroke: var(--signal); }
-.fc-body { transition: stroke var(--dur-base) var(--ease-out); }
-@keyframes fc-run { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@media (max-width: 560px) { .fields-card { grid-template-columns: 1fr; padding: var(--space-2); } .fields-chip { width: 128px; height: 128px; grid-row: 1; } }
-
-/* ---------- the board (full-page circuit) ---------- */
-.board { position: fixed; inset: 0; z-index: 200; background: var(--ground); color: var(--ink); overflow: hidden; display: flex; flex-direction: column; }
-.board-top { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: calc(var(--space-2) + env(safe-area-inset-top, 0px)) var(--gutter) 0; }
-.board-top .label { color: var(--ink-muted); }
-.board-title { font-family: var(--font-display); font-size: clamp(22px, 3vw, 32px); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }
-.board-title span { color: var(--signal); }
-.board-stage { position: relative; flex: 1; min-height: 0; }
-.board-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.board-close { flex: none; }
-.board-foot { position: relative; z-index: 3; flex: none; height: 132px; display: flex; align-items: center; gap: var(--space-4); padding: 0 var(--gutter) env(safe-area-inset-bottom, 0px); border-top: 1px solid var(--line); background: color-mix(in srgb, var(--ground) 88%, transparent); }
-.board-read { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(180px, 260px) minmax(0, 1fr) auto; gap: 4px var(--space-4); align-items: center; transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-slow) var(--ease-float); }
-.board-read.swap { opacity: 0; transform: translateY(10px); }
-.board-read .label { display: block; color: var(--ink-muted); }
-.board-read h3 { font-family: var(--font-display); font-size: 30px; line-height: 1.1; letter-spacing: -.02em; margin: 6px 0 0; }
-.board-read p { color: var(--ink-muted); max-width: 44rem; }
-.board-read .row-actions { gap: 6px 20px; justify-content: flex-end; }
-.board-hint { flex: none; color: var(--ink-muted); max-width: 180px; text-align: right; }
-@media (max-width: 1100px) { .board-hint { display: none; } }
-@media (max-width: 860px), (max-aspect-ratio: 1/1) {
-  .board-foot { height: 236px; align-items: flex-start; padding-top: var(--space-2); }
-  .board-read { grid-template-columns: 1fr; gap: 6px; }
-  .board-read h3 { font-size: 24px; margin: 0; }
-  .board-read p { font-size: 15px; line-height: 22px; }
-  .board-read .row-actions { justify-content: flex-start; margin-top: 2px; }
-}
-.board-fade { transition: opacity 500ms var(--ease-out); }
-.board.closing .board-fade { opacity: 0; }
-
-/* SVG board pieces */
-.pcb-dot { fill: var(--line); }
-.pcb-deco { fill: none; stroke: var(--line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.pcb-via { fill: var(--ground); stroke: var(--line); stroke-width: 2; }
-.pcb-hole { fill: var(--ground); stroke: var(--line); stroke-width: 2; }
-.pcb-silk { font-family: var(--font-mono); font-size: 13px; letter-spacing: .08em; fill: var(--ink-muted); opacity: .7; }
-.pcb-trace { fill: none; stroke: var(--ink-muted); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; transition: stroke var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out), stroke-width var(--dur-base) var(--ease-out); }
-.pcb-trace.thin { stroke-width: 1.5; opacity: .55; }
-.pcb-end { fill: var(--ground); stroke: var(--ink-muted); stroke-width: 2.5; transition: stroke var(--dur-base) var(--ease-out); }
-.pcb-cpu-body { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
-.pcb-cpu-die { fill: var(--ground); stroke: var(--line); stroke-width: 2; }
-.pcb-cpu-pin { fill: var(--ink-muted); transition: fill var(--dur-base) var(--ease-out); }
-.pcb-cpu-pin.on { fill: var(--signal); }
-.pcb-cpu-name { font-family: var(--font-display); font-weight: 700; font-size: 46px; letter-spacing: -.04em; fill: var(--ink); }
-.pcb-cpu-sub { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; fill: var(--ink-muted); }
-.pcb-cpu-mark { fill: var(--signal); }
-.pcb-node { cursor: pointer; outline: none; }
-.pcb-node-body { fill: var(--surface); stroke: var(--line); stroke-width: 2; transition: stroke var(--dur-base) var(--ease-out), fill var(--dur-base) var(--ease-out); }
-.pcb-node-pin { fill: var(--ink-muted); transition: fill var(--dur-base) var(--ease-out); }
-.pcb-node-name { font-family: var(--font-display); font-weight: 600; font-size: 25px; letter-spacing: -.02em; fill: var(--ink); }
-.pcb-node-ref { font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; fill: var(--ink-muted); }
-.pcb-node:hover .pcb-node-body, .pcb-node.sel .pcb-node-body, .pcb-node:focus-visible .pcb-node-body { stroke: var(--signal); }
-.pcb-node:focus-visible .pcb-node-body { stroke-width: 3; }
-.pcb-node.sel .pcb-node-pin, .pcb-node:hover .pcb-node-pin { fill: var(--signal); }
-.pcb-node.ping .pcb-node-body { stroke: var(--lime); }
-.pcb-cpu { cursor: pointer; outline: none; }
-.pcb-cpu:focus-visible .pcb-cpu-body { stroke: var(--focus); stroke-width: 4; }
-.pcb-pulse { fill: var(--lime); }
-.pcb-pulse-glow { fill: var(--lime); opacity: .25; }
-.board-svg.has-sel .pcb-trace.main { opacity: .28; }
-.board-svg.has-sel .pcb-trace.main.sel { opacity: 1; stroke: var(--signal); stroke-width: 4; }
-.board-svg.has-sel .pcb-end.sel { stroke: var(--signal); }
-.board-svg.has-sel .pcb-node:not(.sel) { opacity: .55; }
-.pcb-node, .pcb-cpu { transition: opacity var(--dur-base) var(--ease-out); }
-
-/* entrance choreography (classes added by board.js) */
-.pcb-grid, .pcb-decos, .pcb-silks { opacity: 0; transition: opacity 1.2s var(--ease-out); }
-.board.drawn .pcb-grid, .board.drawn .pcb-decos, .board.drawn .pcb-silks { opacity: 1; }
-.pcb-cpu-g { opacity: 0; transform: scale(.82); transform-box: fill-box; transform-origin: center; transition: opacity 900ms var(--ease-float), transform 1300ms var(--ease-float); }
-.board.drawn .pcb-cpu-g { opacity: 1; transform: none; }
-.pcb-trace.main, .pcb-trace.thin { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.board.drawn .pcb-trace.main, .board.drawn .pcb-trace.thin { stroke-dashoffset: 0; transition: stroke-dashoffset 1.6s var(--ease-float) var(--td, 0ms), stroke var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out), stroke-width var(--dur-base) var(--ease-out); }
-.pcb-end, .pcb-via { transform: scale(0); transform-box: fill-box; transform-origin: center; transition: transform 700ms var(--ease-float) var(--td, 0ms), stroke var(--dur-base) var(--ease-out); }
-.board.drawn .pcb-end, .board.drawn .pcb-via { transform: none; }
-.pcb-node-g { opacity: 0; transform: translateY(18px); transition: opacity 900ms var(--ease-float) var(--td, 0ms), transform 1200ms var(--ease-float) var(--td, 0ms); }
-.board.drawn .pcb-node-g { opacity: 1; transform: none; }
-.pcb-layer { transition: transform 1.6s var(--ease-float); }
+.tl-item a.row-t:hover { color: var(--signal-text); }
 
 /* ---------- project visuals (inline SVG, see src/visuals.mjs) ---------- */
 .v { overflow: visible; }
@@ -446,7 +367,7 @@ a.row:hover .row-t { color: var(--signal); }
 .cell .v-num { display: block; font-family: var(--font-mono); font-size: clamp(16px, 2.2vw, 22px); font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 4px; white-space: nowrap; }
 .verdict { min-height: 52px; color: var(--ink-muted); }
 .verdict b { color: var(--ink); font-weight: 600; }
-.verdict.warn b { color: var(--signal); }
+.verdict.warn b { color: var(--signal-text); }
 
 /* ---------- page transitions between pages ---------- */
 @view-transition { navigation: auto; }
@@ -460,9 +381,143 @@ a.row:hover .row-t { color: var(--signal); }
   .js .kn-reveal { transform: none; transition: opacity var(--dur-fast) linear; transition-delay: 0s !important; }
   .kn-card-media > svg, .kn-card-arrow, .kn-btn-arrow, .kn-link-ext, .fields-card, .fields-open span { transition: none !important; transform: none !important; }
   .kn-tag-pulse::after { animation: none; }
+  [data-theme="light"] .kn-hero-hl { animation: none; background-size: 100% .36em; }
   .kn-nav-hl { transition: none; }
-  .v *, .fields-chip * { animation: none !important; }
+  .v * { animation: none !important; }
   .tl-fill { transform: scaleY(1); }
-  .board *, .board { transition-duration: 1ms !important; transition-delay: 0s !important; }
+  .pcb-stage *, .pcb-stage { transition-duration: 1ms !important; transition-delay: 0s !important; }
+  .p-fan, .p-led, .p-cpu-glow { animation: none !important; }
 }
 @keyframes kn-fade { from { opacity: 0; } }
+
+/* ==========================================================================
+   The Interests page: a green circuit board. It ignores the theme on purpose.
+   ========================================================================== */
+body.pcb-page {
+  --pcb: #066f35; --pcb-lit: #d7ff3d; --pcb-gold: #f0bf45; --pcb-trace: #22c466;
+  --pcb-silk: #f3f8ee; --pcb-silk-2: rgba(243, 248, 238, .7);
+  --ground: #066f35; --surface: rgba(0, 0, 0, .2); --line: rgba(255, 255, 255, .2);
+  --ink: #f3f8ee; --ink-muted: #cbead3; --signal: #ff5b2e; --signal-text: var(--pcb-lit);
+  --on-accent: #131311; --lime: var(--pcb-lit); --focus: var(--pcb-lit); --cursor-blend: normal;
+  color: var(--ink);
+  background: radial-gradient(ellipse 120% 1100px at 50% 320px, #08893f 0%, #066f35 52%, #04552a 100%) no-repeat, #04552a;
+}
+.pcb-page .kn-hero-hl, [data-theme] .pcb-page .kn-hero-hl { color: var(--pcb-lit); background: none; animation: none; }
+.pcb-page .kn-nav, .pcb-page .theme-btn { background: rgba(0, 0, 0, .22); border-color: rgba(255, 255, 255, .2); box-shadow: none; }
+.pcb-page .site-head.scrolled { background: color-mix(in srgb, #055f2d 88%, transparent); }
+.pcb-page .kn-btn-ghost:hover { background: rgba(0, 0, 0, .2); }
+
+.pcb-top { padding-top: clamp(16px, 2.5vw, 32px); }
+.pcb-top .eyebrow { margin-bottom: var(--space-2); }
+.pcb-top-go { margin-left: auto; }
+.pcb-top .kn-hero { font-size: clamp(40px, 5.4vw, 72px); }
+.pcb-stage { position: relative; width: 100%; height: clamp(480px, calc(100svh - 236px), 900px); opacity: 0; transition: opacity 900ms var(--ease-out); }
+.pcb-stage.go { opacity: 1; }
+html:not(.js) .pcb-stage, html:not(.js) .pcb-bar { display: none; }
+.pcb-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+@media (max-width: 720px), (max-aspect-ratio: 4/5) { .pcb-stage { height: auto; aspect-ratio: 900 / 1460; } }
+
+/* board texture and the small stuff */
+.pcb-dot { fill: rgba(255, 255, 255, .06); }
+.d-trace { fill: none; stroke: #0c8a45; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.d-via { fill: var(--pcb-gold); }
+.d-via-h, .pcb-mhole { fill: #02341a; }
+.smd-r { fill: #141816; }
+.smd-c { fill: #b0814a; }
+.pcb-silk-s { font: 500 12px var(--font-mono); letter-spacing: .06em; fill: var(--pcb-silk-2); }
+.pcb-silk-l { font: 500 15px var(--font-mono); letter-spacing: .14em; fill: var(--pcb-silk-2); }
+.pcb-back { opacity: 0; transition: opacity 1.2s var(--ease-out); }
+.go .pcb-back { opacity: 1; }
+
+/* traces: unlit copper, the lit line and its glow */
+.t-thin { fill: none; stroke: var(--pcb-trace); stroke-width: 3; opacity: .5; stroke-linecap: round; stroke-linejoin: round; }
+.t-base { fill: none; stroke: var(--pcb-trace); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.t-lit, .t-glow { fill: none; stroke: var(--pcb-lit); stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1.02; stroke-dashoffset: 1; transition: stroke 500ms var(--ease-out), stroke-width 500ms var(--ease-out); }
+.t-lit { stroke-width: 4; }
+.t-glow { stroke-width: 16; opacity: .55; filter: url(#pcb-glow); }
+.t-lit.sel, .t-glow.sel { stroke: #ff5b2e; }
+.t-lit.sel { stroke-width: 5; }
+.t-head-glow { fill: var(--pcb-lit); opacity: .55; filter: url(#pcb-glow); }
+.t-head-core { fill: #ffffff; }
+.t-head.small .t-head-glow { opacity: .35; }
+
+/* parts */
+.pcb-cpu, .pcb-part { cursor: pointer; outline: none; }
+.pcb-cpu { opacity: 0; transform: scale(.86); transform-box: fill-box; transform-origin: center; transition: opacity 900ms var(--ease-float), transform 1200ms var(--ease-float); }
+.go .pcb-cpu { opacity: 1; transform: none; }
+.pcb-part { opacity: 0; transform: translateY(16px); transition: opacity 900ms var(--ease-float) calc(300ms + var(--i) * 90ms), transform 1200ms var(--ease-float) calc(300ms + var(--i) * 90ms); }
+.go .pcb-part { opacity: 1; transform: none; }
+.p-court { fill: none; stroke: var(--pcb-silk); stroke-width: 2; stroke-dasharray: 8 6; opacity: .4; transition: opacity 400ms var(--ease-out), stroke 400ms var(--ease-out); }
+.pcb-part:hover .p-court, .pcb-part.sel .p-court { opacity: 1; stroke-dasharray: none; }
+.pcb-part.sel .p-court { stroke: #ff5b2e; stroke-width: 3; }
+.pcb-part:focus-visible .p-court { stroke: #ffffff; stroke-width: 4; opacity: 1; stroke-dasharray: none; }
+.p-name { font-family: var(--font-display); font-weight: 700; font-size: 30px; letter-spacing: -.02em; fill: var(--pcb-silk); }
+.p-ref { font: 500 13px var(--font-mono); letter-spacing: .1em; fill: var(--pcb-silk-2); }
+.p-chip { fill: #121614; stroke: #2e3a35; stroke-width: 1.5; }
+.p-edge { fill: none; stroke: #36443e; stroke-width: 2; }
+.p-ring { fill: none; stroke: #4a5a53; stroke-width: 2; }
+.p-hole { fill: #070908; }
+.p-hub { fill: #1d2421; stroke: #3a4842; stroke-width: 2; }
+.p-blade { fill: #3d4b45; }
+.p-fan { transform-box: fill-box; transform-origin: center; }
+.on .p-fan { animation: p-spinup 2.2s cubic-bezier(.5, 0, 1, 1), p-spin .8s linear 2.2s infinite; }
+.p-gold { fill: var(--pcb-gold); }
+.p-sub { fill: #04552a; stroke: #034220; stroke-width: 1.5; }
+.p-cut { fill: #066f35; }
+.p-led { fill: #2b3632; transition: fill 500ms var(--ease-out); }
+.on .p-led { fill: var(--pcb-lit); }
+.on .p-led-ram { animation: p-blink 1.3s steps(1) infinite; animation-delay: calc(var(--i) * 160ms); }
+.on .p-led-blink { animation: p-blink .8s steps(1) infinite; }
+.p-print { font: 500 11px var(--font-mono); letter-spacing: .12em; fill: #7f8e88; }
+.p-sticker { fill: #eef2ea; }
+.p-sticker-t { font: 600 9px var(--font-mono); letter-spacing: .08em; fill: #121614; }
+.p-ctrl { fill: #1c2321; stroke: #3a4842; stroke-width: 1.5; }
+.p-nand { fill: #232a28; }
+.p-switch { fill: #070908; stroke: #4a5a53; stroke-width: 2; }
+.p-rocker { fill: #3a4842; transform-box: fill-box; transition: fill 500ms var(--ease-out), transform 700ms var(--ease-float); }
+.on .p-rocker { fill: #ff5b2e; transform: translateX(22px); }
+.p-screen { fill: #0b100e; }
+.p-bar { opacity: 0; transition: opacity 400ms var(--ease-out); }
+.on .p-bar { opacity: 1; transition-delay: calc(var(--i) * 80ms); }
+.p-glass { fill: #ffffff; opacity: .05; }
+.p-ribbon { fill: #d29a35; }
+.p-ribbon-l { stroke: #8a5f17; stroke-width: 1.5; }
+.p-ihs { fill: #1a201d; stroke: #3b4a43; stroke-width: 2; }
+.p-cpu-name { font-family: var(--font-display); font-weight: 700; letter-spacing: -.03em; fill: var(--pcb-silk); }
+.p-cpu-sub { font: 500 14px var(--font-mono); letter-spacing: .12em; fill: var(--pcb-silk-2); }
+.p-cpu-glow { fill: none; stroke: var(--pcb-lit); stroke-width: 3; opacity: 0; transition: opacity 800ms var(--ease-out), stroke 500ms var(--ease-out); }
+.pcb-cpu.on .p-cpu-glow { opacity: .9; animation: p-breathe 3.4s var(--ease-move) infinite; }
+.pcb-cpu.sel .p-cpu-glow { stroke: #ff5b2e; }
+.pcb-cpu:focus-visible .p-chip { stroke: #ffffff; stroke-width: 4; }
+@keyframes p-spin { to { transform: rotate(360deg); } }
+@keyframes p-spinup { from { transform: rotate(0deg); } to { transform: rotate(540deg); } }
+@keyframes p-blink { 0% { fill: var(--pcb-lit); } 50% { fill: #2b3632; } }
+@keyframes p-breathe { 50% { opacity: .35; } }
+
+/* the readout under the board */
+.pcb-bar { display: grid; grid-template-columns: minmax(200px, 280px) minmax(0, 1fr) minmax(240px, 420px); gap: var(--space-2) var(--space-4); align-items: start; padding: 28px 0 8px; border-top: 1px solid var(--line); transition: opacity 300ms var(--ease-out), transform 700ms var(--ease-float); }
+.pcb-bar.swap { opacity: 0; transform: translateY(8px); }
+.pcb-bar .label { display: block; color: var(--ink-muted); }
+.pcb-bar-id h2 { font-family: var(--font-display); font-size: clamp(28px, 3vw, 38px); line-height: 1.05; letter-spacing: -.03em; margin-top: 8px; }
+.pcb-bar-text { color: var(--ink-muted); font-size: 17px; line-height: 27px; }
+.pcb-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.pcb-chip { display: inline-flex; align-items: baseline; gap: 8px; padding: 8px 14px; border-radius: var(--radius-pill); background: rgba(0, 0, 0, .24); border: 1px solid rgba(255, 255, 255, .18); color: var(--ink); text-decoration: none; font-size: 14px; line-height: 18px; transition: background-color 300ms var(--ease-out), color 300ms var(--ease-out), transform 500ms var(--ease-float); }
+.pcb-chip em { font: normal 500 11px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; opacity: .7; }
+.pcb-chip:hover { background: var(--pcb-lit); color: #131311; transform: translateY(-2px); }
+@media (max-width: 960px) { .pcb-bar { grid-template-columns: 1fr; gap: 12px; } }
+
+/* below the board */
+.pcb-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--space-2); }
+.pcb-card { display: flex; flex-direction: column; gap: 10px; padding: 24px; background: rgba(0, 0, 0, .2); border: 1px solid rgba(255, 255, 255, .16); border-radius: var(--radius-md); }
+.pcb-card .label { color: var(--pcb-lit); }
+.pcb-card h3 { font-family: var(--font-display); font-size: 26px; line-height: 1.1; letter-spacing: -.02em; }
+.pcb-card p { color: var(--ink-muted); }
+.pcb-card ul { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.pcb-card li .muted { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-left: 8px; }
+.pcb-research { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2) var(--space-4); align-items: center; padding: clamp(24px, 4vw, 48px); border-radius: var(--radius-md); background: var(--pcb-lit); color: #131311; text-decoration: none; transition: transform 700ms var(--ease-float); }
+.pcb-research:hover { transform: translateY(-4px); }
+.pcb-research .label { color: #131311; opacity: .7; }
+.pcb-research .display { margin: 8px 0 12px; }
+.pcb-research p { max-width: 40rem; }
+.pcb-research-arrow { font-family: var(--font-display); font-size: clamp(48px, 7vw, 96px); line-height: 1; transition: transform 700ms var(--ease-float); }
+.pcb-research:hover .pcb-research-arrow { transform: translate(8px, -8px); }
