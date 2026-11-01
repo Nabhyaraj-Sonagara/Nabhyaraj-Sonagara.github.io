@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Black hole simulator — Nabhyaraj Sonagara</title>
+<meta name="description" content="A black hole simulation in C++ and OpenGL: gravitational lensing in 2D, then light traced along curved paths on the CPU and in a GPU compute shader. My working copy of kavan010's open-source project.">
+<meta name="author" content="Nabhyaraj Sonagara">
+<link rel="canonical" href="https://nabhyaraj-sonagara.github.io/work/black-hole-simulator/">
+<meta name="theme-color" content="#0e0e0c">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Nabhyaraj Sonagara">
+<meta property="og:title" content="Black hole simulator — Nabhyaraj Sonagara">
+<meta property="og:description" content="A black hole simulation in C++ and OpenGL: gravitational lensing in 2D, then light traced along curved paths on the CPU and in a GPU compute shader. My working copy of kavan010's open-source project.">
+<meta property="og:url" content="https://nabhyaraj-sonagara.github.io/work/black-hole-simulator/">
+<meta property="og:image" content="https://nabhyaraj-sonagara.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Black hole simulator — Nabhyaraj Sonagara">
+<meta name="twitter:description" content="A black hole simulation in C++ and OpenGL: gravitational lensing in 2D, then light traced along curved paths on the CPU and in a GPU compute shader. My working copy of kavan010's open-source project.">
+<meta name="twitter:image" content="https://nabhyaraj-sonagara.github.io/og.png">
+<script>(function(){var d=document.documentElement,t;d.classList.add("js");try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}d.setAttribute("data-theme",t);if(t==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#f4f1ea")}})();</script>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap">
+<link rel="stylesheet" href="/assets/kinetic.css">
+</head>
+<body>
+<a class="kn-btn kn-btn-primary kn-btn-sm skip" href="#main"><span class="kn-btn-label">Skip to content</span></a>
+<header class="site-head"><div class="wrap bar">
+  <a class="mark" href="/">Nabhyaraj<span>.</span></a>
+  <nav class="kn-nav" aria-label="Main"><ul class="kn-nav-list"><li><a class="kn-nav-item" href="/work/" aria-current="page">Work</a></li><li><a class="kn-nav-item" href="/research/">Research</a></li><li><a class="kn-nav-item" href="/timeline/">Timeline</a></li><li><a class="kn-nav-item" href="/about/">About</a></li><li><a class="kn-nav-item" href="/contact/">Contact</a></li></ul><div class="kn-nav-hl" aria-hidden="true"><ul class="kn-nav-list"><li><span class="kn-nav-item">Work</span></li><li><span class="kn-nav-item">Research</span></li><li><span class="kn-nav-item">Timeline</span></li><li><span class="kn-nav-item">About</span></li><li><span class="kn-nav-item">Contact</span></li></ul></div></nav>
+  <button class="theme-btn" type="button" aria-label="Switch theme"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+</div></header>
+<main id="main">
+
+<section class="section p-hero"><div class="wrap">
+  <div class="eyebrow"><a class="kn-link" href="/work/">← All work</a></div>
+  <div class="kn-card-media p-media kn-tone-surface" data-visual style="view-transition-name:v-black-hole-simulator"><svg class="v" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A black hole with a glowing accretion disk"><circle class="b-f" cx="46" cy="38" r="1.8" style="animation:v-fade 3s var(--ease-move) 0s infinite"/><circle class="b-f" cx="92" cy="160" r="1.2" style="animation:v-fade 4s var(--ease-move) -1s infinite"/><circle class="b-f" cx="262" cy="44" r="1.2" style="animation:v-fade 5s var(--ease-move) -2s infinite"/><circle class="b-f" cx="280" cy="150" r="1.8" style="animation:v-fade 6s var(--ease-move) -3s infinite"/><circle class="b-f" cx="210" cy="28" r="1.2" style="animation:v-fade 3s var(--ease-move) -4s infinite"/><circle class="b-f" cx="60" cy="120" r="1.2" style="animation:v-fade 4s var(--ease-move) -5s infinite"/><circle class="b-f" cx="128" cy="30" r="1.8" style="animation:v-fade 5s var(--ease-move) -6s infinite"/><circle class="b-f" cx="236" cy="172" r="1.2" style="animation:v-fade 6s var(--ease-move) -7s infinite"/>
+    <g style="transform-box:view-box;transform-origin:160px 100px;animation:v-tilt 10s var(--ease-move) 0s infinite alternate">
+      <ellipse class="a-s" cx="160" cy="100" rx="118" ry="24" stroke-width="3" pathLength="1" stroke-dasharray=".05 .03" opacity=".55" style="animation:v-dash 16s linear 0s infinite"/>
+      <ellipse class="a-s" cx="160" cy="100" rx="86" ry="16" stroke-width="5" pathLength="1" stroke-dasharray=".09 .04" style="animation:v-dash 10s linear 0s infinite"/>
+      <path class="a-s" d="M116 100 A44 42 0 0 1 204 100" stroke-width="3" pathLength="1" stroke-dasharray=".12 .05" style="animation:v-dash 7s linear 0s infinite"/>
+      <circle class="b-s" cx="160" cy="100" r="38" stroke-width="1.5" style="animation:v-glow 4s var(--ease-move) 0s infinite alternate"/>
+      <circle class="hole" cx="160" cy="100" r="32"/>
+      <path class="a-s" d="M42 100 A118 24 0 0 0 278 100" stroke-width="3" pathLength="1" stroke-dasharray=".05 .03" opacity=".7" style="animation:v-dash 16s linear 0s infinite"/>
+      <path class="a-s" d="M74 100 A86 16 0 0 0 246 100" stroke-width="5" pathLength="1" stroke-dasharray=".09 .04" style="animation:v-dash 10s linear 0s infinite"/>
+    </g></svg></div>
+  <div class="p-head">
+    <div>
+      <div class="kn-card-meta" style="margin-bottom:var(--space-2)"><span class="kn-card-year">Jul 2026</span><span class="kn-tag">C++</span><span class="kn-tag">OpenGL</span><span class="kn-tag">GLSL</span></div>
+      <h1 class="kn-hero kn-hero-md" aria-label="Black hole simulator"><span class="kn-hero-word kn-hero-hl" aria-hidden="true"><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:0">B</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:1">l</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:2">a</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:3">c</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:4">k</span></span></span> <span class="kn-hero-word" aria-hidden="true"><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:5">h</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:6">o</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:7">l</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:8">e</span></span></span> <span class="kn-hero-word" aria-hidden="true"><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:9">s</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:10">i</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:11">m</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:12">u</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:13">l</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:14">a</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:15">t</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:16">o</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:17">r</span></span></span></h1>
+      <p class="body-lg kn-reveal" style="--d:400ms">A black hole simulation in C++ and OpenGL: gravitational lensing in 2D, then light traced along curved paths on the CPU and in a GPU compute shader. My working copy of kavan010's open-source project.</p>
+    </div>
+    <div class="sheet kn-reveal" style="--d:550ms">
+      <dl><dt>Stack</dt><dd>C++17, OpenGL, GLSL</dd><dt>Build</dt><dd>CMake, vcpkg</dd><dt>Based on</dt><dd>kavan010/black_hole</dd><dt>Status</dt><dd>Study copy</dd></dl>
+      <div class="row-actions"><a class="kn-btn kn-btn-primary kn-btn-sm" href="https://github.com/Nabhyaraj-Sonagara/black-hole-simulator-cpp" target="_blank" rel="noreferrer" ><span class="kn-btn-label">Code on GitHub<span class="kn-btn-arrow" aria-hidden="true">→</span></span></a></div>
+    </div>
+  </div>
+</div></section>
+<section class="section"><div class="wrap">
+  <div class="shead"><h2 class="heading">The write-up</h2><span class="label">3 parts</span></div>
+  <div class="notes"><div class="note kn-reveal" style="--d:0ms"><h2>What it is</h2><p>Light near a black hole does not travel in straight lines. This simulation traces those bent paths, called geodesics, and draws what an observer would actually see.</p></div><div class="note kn-reveal" style="--d:90ms"><h2>How it works</h2><p>Four programs that build on each other: 2D lensing, geodesics on the CPU, a ray tracer, and a GLSL compute shader that moves the geodesic maths onto the GPU. Built with CMake, GLFW, GLEW and GLM.</p></div><div class="note kn-reveal" style="--d:180ms"><h2>Credit</h2><p>The code comes from kavan010's open-source black_hole project. I keep this copy to build, run and take apart.</p></div></div>
+</div></section>
+<section class="section"><div class="wrap">
+  <nav class="pager" aria-label="More projects">
+    <a href="/work/fine-print-reader/"><span class="label muted">← Previous</span><span class="heading">Fine Print Reader</span></a>
+    <a href="/work/lanlink/"><span class="label muted">Next →</span><span class="heading">LanLink</span></a>
+  </nav>
+</div></section>
+</main>
+<footer class="site-foot"><div class="wrap foot">
+  <span class="label">Built with love, by Nabhyaraj and Claude</span>
+  <span class="foot-links"><a class="kn-link" href="https://github.com/Nabhyaraj-Sonagara" target="_blank" rel="noreferrer">GitHub<span class="kn-link-ext" aria-hidden="true">↗</span></a><a class="kn-link" href="https://www.linkedin.com/in/nabhyaraj-sonagara-9624b4419/" target="_blank" rel="noreferrer">LinkedIn<span class="kn-link-ext" aria-hidden="true">↗</span></a><a class="kn-link" href="https://substack.com/@nabhyaraj" target="_blank" rel="noreferrer">Substack<span class="kn-link-ext" aria-hidden="true">↗</span></a><a class="kn-link" href="mailto:snabhyaraj@gmail.com">Email</a></span>
+  <span class="label">Ahmedabad · Last updated November 2026</span>
+</div></footer>
+<div class="toast label" id="toast" role="status" hidden></div>
+<script src="/assets/site.js" defer></script>
+
+</body>
+</html>
