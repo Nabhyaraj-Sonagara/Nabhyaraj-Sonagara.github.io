@@ -18,7 +18,7 @@ export const site = {
 
 export const nav = [
   { label: "Work", href: "/work/" },
-  { label: "Research", href: "/research/" },
+  { label: "Interests", href: "/interests/" },
   { label: "Timeline", href: "/timeline/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
@@ -156,32 +156,42 @@ export const projects = [
   },
 ];
 
-// The circuit board. Physics is the CPU; everything else is wired to it.
+// The Interests board. Physics is the CPU; every other interest is a part wired to it.
+// `related` lists work by project slug, or as { title, href, kind } for anything else.
+const PAPER = { title: "The low-bit reasoning paper", href: "/quantization-aware-reasoning-distillation/", kind: "Paper" };
+const ESSAY = { title: "Is the world getting uglier?", href: "https://substack.com/@nabhyaraj", kind: "Essay" };
 export const fields = {
   core: {
-    id: "physics", name: "Physics", ref: "U1 · CORE",
-    text: "The centre of it all. I am heading for work as an experimental physicist, and I want to use AI to make physics more efficient and accessible than ever before.",
-    links: [{ label: "ATLAS collision predictor", href: "/work/atlas-collision-predictor/" }, { label: "Black hole simulator", href: "/work/black-hole-simulator/" }],
+    id: "physics", name: "Physics", part: "CPU", ref: "U1 · CPU",
+    role: "Central processor",
+    text: "The centre of it all. I am heading for work as an experimental physicist, and I want to use AI to make physics more efficient and accessible than ever before. Physics gives the questions; every other part on this board is how I get at them.",
+    related: ["atlas-collision-predictor", "black-hole-simulator"],
   },
   nodes: [
-    { id: "ai", name: "Artificial intelligence", short: "AI", ref: "U2",
-      text: "Small models written from scratch, agents that share one vault, and a paper on low-bit reasoning. Physics gives the questions. The models are how I get at them.",
-      links: [{ label: "TinyGPT", href: "/work/tinygpt/" }, { label: "The paper", href: "/quantization-aware-reasoning-distillation/" }] },
-    { id: "maths", name: "Mathematics", short: "Mathematics", ref: "U3",
-      text: "The third field I study, next to AI and physics. Hand-written backprop, bits per weight, light bending around a black hole: it is all maths underneath.",
-      links: [{ label: "Research", href: "/research/" }] },
-    { id: "fintech", name: "Fintech", short: "Fintech", ref: "U4",
-      text: "Trading bots trained and run on paper against Indian markets, so I learn how a strategy fails before a failure costs anything.",
-      links: [{ label: "Paper-trading bots", href: "/work/paper-trading-bots/" }] },
-    { id: "design", name: "Design", short: "Design", ref: "U5",
-      text: "Away from the screen I think about design, and I want to work at a design firm to make an impact. I wrote an essay asking whether the world is getting uglier.",
-      links: [{ label: "The essay on Substack", href: "https://substack.com/@nabhyaraj", external: true }] },
-    { id: "writing", name: "Writing", short: "Writing", ref: "U6",
-      text: "A frank commentary on life, the universe and everything, on Substack. And notes on one paper a week, turned into summaries I can cite later.",
-      links: [{ label: "Substack", href: "https://substack.com/@nabhyaraj", external: true }] },
-    { id: "games", name: "Deckbuilders", short: "Deckbuilders", ref: "U7",
+    { id: "ai", name: "Artificial intelligence", short: "AI", part: "GPU", ref: "GPU0",
+      role: "Parallel compute",
+      text: "Small models written from scratch, agents that share one vault, and a paper on low-bit reasoning. It does the heavy lifting for everything else on the board.",
+      related: ["tinygpt", "multi-agent-study-system", "agent-referendum", "fine-print-reader", "ostium", PAPER] },
+    { id: "maths", name: "Mathematics", short: "Mathematics", part: "RAM", ref: "DIMM1",
+      role: "Working memory",
+      text: "The third field I study, next to AI and physics, and the thing the CPU keeps reaching for. Hand-written backprop, bits per weight, light bending around a black hole: it is all maths underneath.",
+      related: ["tinygpt", "atlas-collision-predictor", PAPER] },
+    { id: "writing", name: "Writing", short: "Writing", part: "SSD", ref: "M.2 · SSD1",
+      role: "Long-term storage",
+      text: "Where things get written down so they last. A frank commentary on life, the universe and everything on Substack, and notes on one paper a week, turned into summaries I can cite later.",
+      related: [{ title: "Substack", href: "https://substack.com/@nabhyaraj", kind: "Writing" }, ESSAY, { title: "Weekly paper notes", href: "/interests/research/", kind: "Notes" }] },
+    { id: "design", name: "Design", short: "Design", part: "LCD", ref: "LCD1",
+      role: "The display",
+      text: "How everything looks when it reaches a person. I think about design, want to work at a design firm to make an impact, and built this site on a design system of my own called Kinetic.",
+      related: [ESSAY, { title: "This site's code", href: "https://github.com/Nabhyaraj-Sonagara/Nabhyaraj-Sonagara.github.io", kind: "Code" }, "lanlink"] },
+    { id: "fintech", name: "Fintech", short: "Fintech", part: "PSU", ref: "PSU1",
+      role: "Power supply",
+      text: "The fourth field I study. Trading bots trained and run on paper against Indian markets, so I learn how a strategy fails before a failure costs anything.",
+      related: ["paper-trading-bots"] },
+    { id: "games", name: "Deckbuilders", short: "Deckbuilders", part: "SLOT", ref: "J4",
+      role: "Card slot",
       text: "I play score-chasing deckbuilders, which is where I learned that constraints are what make a thing interesting.",
-      links: [{ label: "More about me", href: "/about/" }] },
+      related: [] },
   ],
 };
 

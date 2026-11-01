@@ -4,7 +4,7 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { site, nav, marquee, projects, fields, research, timeline, about, paper } from "./content.mjs";
-import { visual, fieldsChip } from "./visuals.mjs";
+import { visual } from "./visuals.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -66,36 +66,22 @@ function marqueeBlock() {
   return `<div class="kn-marquee" aria-label="Things I work with" data-speed="56"><div class="kn-marquee-track">${row(false)}${row(true)}</div></div>`;
 }
 
-function fieldsCard() {
-  const names = [fields.core, ...fields.nodes].map((n) => n.short || n.name);
-  return `<button class="fields-card kn-reveal" type="button" data-board-open aria-haspopup="dialog" aria-controls="board">
-  <span>
-    <span class="label">Fields of study</span>
-    <span class="heading" style="display:block">Physics, and everything wired to it.</span>
-    <span class="tags">${names.map((n) => tag(n)).join("")}</span>
-    <span class="label fields-open">Open the board <span aria-hidden="true">↗</span></span>
-  </span>
-  ${fieldsChip()}
-</button>`;
+// Related work on the Interests board: project slugs become links to their pages.
+function resolve(list) {
+  return list.map((x) => {
+    if (typeof x !== "string") return x;
+    const p = projects.find((q) => q.slug === x);
+    if (!p) throw new Error("Unknown project in fields: " + x);
+    return { title: p.title, href: `/work/${p.slug}/`, kind: "Project" };
+  });
 }
+const board = {
+  core: { ...fields.core, related: resolve(fields.core.related) },
+  nodes: fields.nodes.map((n) => ({ ...n, related: resolve(n.related) })),
+};
 
-function board() {
-  const all = [fields.core, ...fields.nodes];
-  const list = all.map((n) => `<li><strong>${esc(n.name)}.</strong> ${esc(n.text)}</li>`).join("");
-  const data = JSON.stringify(fields).replace(/</g, "\\u003c");
-  return `<div class="board" id="board" role="dialog" aria-modal="true" aria-labelledby="board-title" hidden>
-  <div class="board-top board-fade">
-    <div><span class="label">Fields of study · ${all.length} components</span><div class="board-title" id="board-title">Physics, and everything <span>wired</span> to it.</div></div>
-    ${btn('Close <span aria-hidden="true">✕</span>', null, { variant: "ghost", size: "sm", attrs: 'data-board-close aria-label="Close the board"' })}
-  </div>
-  <div class="board-stage board-fade"></div>
-  <div class="board-foot board-fade">
-    <div class="board-read" aria-live="polite"></div>
-    <div class="board-hint label">Pick a component · Esc to close</div>
-  </div>
-  <ul class="sr-only">${list}</ul>
-  <script type="application/json" id="board-data">${data}</script>
-</div>`;
+function interestsLink(label = "See how my interests connect") {
+  return `<a class="row kn-reveal" href="/interests/"><span class="label">Interests</span><span><span class="row-t">${esc(label)}</span><span class="row-d">Physics is the CPU. AI, maths, writing, design, fintech and deckbuilders are the parts wired to it.</span></span><span class="label">Board ↗</span></a>`;
 }
 
 function contactLine() {
@@ -137,7 +123,7 @@ function footer() {
 <div class="toast label" id="toast" role="status" hidden></div>`;
 }
 
-function page({ path, title, description = site.description, active, body, scripts = [], jsonld = "", extraHead = "" }) {
+function page({ path, title, description = site.description, active, body, scripts = [], jsonld = "", extraHead = "", bodyClass = "" }) {
   const url = site.url + path;
   const full = path === "/" ? title : `${title} — ${site.name}`;
   return `<!doctype html>
@@ -169,7 +155,7 @@ ${extraHead}<script>(function(){var d=document.documentElement,t;d.classList.add
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap">
 <link rel="stylesheet" href="/assets/kinetic.css">
 ${jsonld}</head>
-<body>
+<body${bodyClass ? ` class="${bodyClass}"` : ""}>
 ${header(active)}
 <main id="main">
 ${body}
@@ -197,7 +183,6 @@ pages["/"] = page({
     knowsAbout: ["Machine learning", "Quantization", "Language models", "Experimental physics", "Particle physics", "Mathematics"],
     sameAs: Object.values(site.links),
   })}</script>\n`,
-  scripts: ["board.js"],
   body: `
 <section class="hero"><div class="wrap">
   <div class="eyebrow">${nowTag("Open to internships in tech and physics")}<span class="label">${site.city}</span></div>
@@ -207,7 +192,7 @@ pages["/"] = page({
 </div></section>
 
 <section class="section"><div class="wrap split">
-  ${fieldsCard()}
+  <div class="rows">${interestsLink()}</div>
   <div class="aside kn-reveal" style="--d:120ms">
     <span class="label">Right now</span>
     <p>Writing a paper on why low-bit models misjudge how long to think.</p>
@@ -224,12 +209,11 @@ pages["/"] = page({
 ${marqueeBlock()}
 
 <section class="section" style="padding-top:var(--section)"><div class="wrap">
-  <div class="shead"><h2 class="display">Research and writing</h2><span class="label">Paper notes every week</span></div>
+  <div class="shead"><h2 class="display">Research and writing</h2>${textLink("More under Interests", "/interests/research/", false)}</div>
   ${rows(research.rows)}
 </div></section>
 
-${contactLine()}
-${board()}`,
+${contactLine()}`,
 });
 
 pages["/work/"] = page({
@@ -282,13 +266,42 @@ projects.forEach((p, idx) => {
   });
 });
 
-pages["/research/"] = page({
-  path: "/research/", active: "/research/", title: "Research and writing",
+pages["/interests/"] = page({
+  path: "/interests/", active: "/interests/", title: "Interests", bodyClass: "pcb-page", scripts: ["board.js"],
+  description: "Nabhyaraj Sonagara's interests as a circuit board: physics at the core, with AI, mathematics, writing, design, fintech and deckbuilders wired to it, and the work behind each.",
+  body: `
+<section class="pcb-hero">
+  <div class="wrap pcb-top">
+    <div class="eyebrow"><span class="label">Interests · ${board.nodes.length + 1} parts on one board</span><span class="label">Pick a part</span><span class="pcb-top-go">${btn("Research and writing", "/interests/research/", { size: "sm", arrow: true })}</span></div>
+    ${heroTitle("Physics, and everything wired to it.", "wired", "kn-hero-md")}
+  </div>
+  <div class="pcb-stage" id="pcb-stage" role="group" aria-label="A circuit board of interests. Pick a part to see the work wired to it."></div>
+  <div class="wrap"><div class="pcb-bar" id="pcb-bar" aria-live="polite"></div></div>
+</section>
+<section class="section"><div class="wrap">
+  <a class="pcb-research kn-reveal" href="/interests/research/">
+    <div><span class="label">Sub-page · Research</span><h2 class="display">Research and writing</h2>
+    <p>The independent paper on why low-bit reasoning models misjudge how long to think, an essay on design, and notes on one paper a week.</p></div>
+    <span class="pcb-research-arrow" aria-hidden="true">↗</span>
+  </a>
+</div></section>
+<section class="section"><div class="wrap">
+  <div class="shead"><h2 class="display">Wired to the work</h2><span class="label">Every part, in words</span></div>
+  <div class="pcb-cards">${[board.core, ...board.nodes].map((n, i) => `<article class="pcb-card kn-reveal" id="${n.id}" style="--d:${(i % 3) * 80}ms">
+    <span class="label">${esc(n.ref)} · ${esc(n.role)}</span><h3>${esc(n.name)}</h3><p>${esc(n.text)}</p>
+    ${n.related.length ? `<ul>${n.related.map((r) => `<li>${textLink(r.title, r.href)}<span class="muted">${esc(r.kind)}</span></li>`).join("")}</ul>` : ""}
+  </article>`).join("")}</div>
+</div></section>
+<script type="application/json" id="pcb-data">${JSON.stringify(board).replace(/</g, "\\u003c")}</script>`,
+});
+
+const researchWork = ["tinygpt", "atlas-collision-predictor"].map((slug) => projects.find((p) => p.slug === slug));
+pages["/interests/research/"] = page({
+  path: "/interests/research/", active: "/interests/", title: "Research and writing",
   description: "Research and writing by Nabhyaraj Sonagara: an independent paper on quantization-aware reasoning distillation, essays and weekly paper notes.",
-  scripts: ["board.js"],
   body: `
 <section class="hero"><div class="wrap">
-  <div class="eyebrow"><span class="label">Paper notes every week</span></div>
+  <div class="eyebrow">${textLink("← Interests", "/interests/", false)}<span class="label">Paper notes every week</span></div>
   ${heroTitle("Research and writing.", "research")}
   <p class="body-lg kn-reveal" style="--d:450ms">${esc(research.intro)}</p>
   <div class="row-actions kn-reveal" style="--d:600ms">${btn("Read the paper's record", "/quantization-aware-reasoning-distillation/", { arrow: true })}</div>
@@ -297,17 +310,20 @@ pages["/research/"] = page({
   <div>${rows(research.rows)}</div>
   <div class="aside kn-reveal"><span class="label">Fields</span><p>Artificial intelligence · Physics · Mathematics · Fintech</p><span class="label">Heading for</span><p>${esc(research.headingFor)}</p></div>
 </div></section>
-<section class="section"><div class="wrap">${fieldsCard()}</div></section>
-${board()}`,
+<section class="section"><div class="wrap">
+  <div class="shead"><h2 class="display">Where it shows up in the work</h2>${textLink("All projects", "/work/", false)}</div>
+  <div class="cards">${researchWork.map((p, i) => card(p, i)).join("")}</div>
+</div></section>
+<section class="section"><div class="wrap"><div class="rows">${interestsLink("Back to the board")}</div></div></section>`,
 });
 
 pages["/quantization-aware-reasoning-distillation/"] = page({
-  path: "/quantization-aware-reasoning-distillation/", active: "/research/", title: "Quantization-aware reasoning distillation",
+  path: "/quantization-aware-reasoning-distillation/", active: "/interests/", title: "Quantization-aware reasoning distillation",
   description: "The working record of an independent paper on why low-bit reasoning models misjudge how long to think, by Nabhyaraj Sonagara.",
   scripts: ["instrument.js"],
   body: `
 <section class="hero"><div class="wrap">
-  <div class="eyebrow">${textLink("← Research", "/research/", false)}<span class="label">In progress</span><span class="label">Started September 2026</span></div>
+  <div class="eyebrow">${textLink("← Research", "/interests/research/", false)}<span class="label">In progress</span><span class="label">Started September 2026</span></div>
   ${heroTitle("Quantization-aware reasoning distillation", "reasoning", "kn-hero-md")}
   <p class="body-lg kn-reveal" style="--d:600ms">${esc(paper.lede)}</p>
 </div></section>
@@ -386,7 +402,6 @@ ${contactLine()}`,
 pages["/about/"] = page({
   path: "/about/", active: "/about/", title: "About",
   description: "About Nabhyaraj Sonagara: a student of AI, physics and mathematics in Ahmedabad who learns by rebuilding things from scratch.",
-  scripts: ["board.js"],
   body: `
 <section class="hero"><div class="wrap">
   <div class="eyebrow"><span class="label">The short version</span><span class="label">${site.city}</span></div>
@@ -400,9 +415,8 @@ pages["/about/"] = page({
     <span class="label">Heading for</span><p>${esc(research.headingFor)}</p>
   </div>
 </div></section>
-<section class="section"><div class="wrap">${fieldsCard()}</div></section>
-${contactLine()}
-${board()}`,
+<section class="section"><div class="wrap"><div class="rows">${interestsLink()}</div></div></section>
+${contactLine()}`,
 });
 
 pages["/contact/"] = page({
@@ -445,6 +459,14 @@ function out(path, html) {
 }
 for (const [path, html] of Object.entries(pages)) out(path, html);
 out("/404.html", notFound);
+
+mkdirSync(join(ROOT, "research"), { recursive: true });
+writeFileSync(join(ROOT, "research", "index.html"), `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Research moved</title>
+<link rel="canonical" href="${site.url}/interests/research/"><meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0; url=/interests/research/"></head>
+<body><p>Research now lives under <a href="/interests/research/">Interests</a>.</p></body></html>
+`);
 
 const today = new Date().toISOString().slice(0, 10);
 const prio = (p) => (p === "/" ? "1.0" : p.split("/").length > 3 ? "0.6" : "0.8");
