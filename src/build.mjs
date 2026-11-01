@@ -1,12 +1,15 @@
 // Builds every page of the site from src/content.mjs into static HTML at the repo root.
 // No dependencies: `node src/build.mjs`. Commit the output; GitHub Pages serves it as-is.
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { site, nav, marquee, projects, fields, research, timeline, about, paper } from "./content.mjs";
 import { visual } from "./visuals.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+// Asset links carry a fingerprint of the file, so a deploy never meets a stale cached copy.
+const asset = (name) => `/assets/${name}?v=${createHash("sha1").update(readFileSync(join(ROOT, "assets", name))).digest("hex").slice(0, 10)}`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const ext = (href) => /^https?:/.test(href) || href.startsWith("mailto:");
 
@@ -149,11 +152,11 @@ function page({ path, title, description = site.description, active, body, scrip
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${site.url}/og.png">
 ${extraHead}<script>(function(){var d=document.documentElement,t;d.classList.add("js");try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}d.setAttribute("data-theme",t);if(t==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#f4f1ea")}})();</script>
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="${asset("favicon.svg")}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap">
-<link rel="stylesheet" href="/assets/kinetic.css">
+<link rel="stylesheet" href="${asset("kinetic.css")}">
 ${jsonld}</head>
 <body${bodyClass ? ` class="${bodyClass}"` : ""}>
 ${header(active)}
@@ -161,8 +164,8 @@ ${header(active)}
 ${body}
 </main>
 ${footer()}
-<script src="/assets/site.js" defer></script>
-${scripts.map((s) => `<script src="/assets/${s}" defer></script>`).join("\n")}
+<script src="${asset("site.js")}" defer></script>
+${scripts.map((s) => `<script src="${asset(s)}" defer></script>`).join("\n")}
 </body>
 </html>
 `;
@@ -278,20 +281,7 @@ pages["/interests/"] = page({
   <div class="pcb-stage" id="pcb-stage" role="group" aria-label="A circuit board of interests. Pick a part to see the work wired to it."></div>
   <div class="wrap"><div class="pcb-bar" id="pcb-bar" aria-live="polite"></div></div>
 </section>
-<section class="section"><div class="wrap">
-  <a class="pcb-research kn-reveal" href="/interests/research/">
-    <div><span class="label">Sub-page · Research</span><h2 class="display">Research and writing</h2>
-    <p>The independent paper on why low-bit reasoning models misjudge how long to think, an essay on design, and notes on one paper a week.</p></div>
-    <span class="pcb-research-arrow" aria-hidden="true">↗</span>
-  </a>
-</div></section>
-<section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">Wired to the work</h2><span class="label">Every part, in words</span></div>
-  <div class="pcb-cards">${[board.core, ...board.nodes].map((n, i) => `<article class="pcb-card kn-reveal" id="${n.id}" style="--d:${(i % 3) * 80}ms">
-    <span class="label">${esc(n.ref)} · ${esc(n.role)}</span><h3>${esc(n.name)}</h3><p>${esc(n.text)}</p>
-    ${n.related.length ? `<ul>${n.related.map((r) => `<li>${textLink(r.title, r.href)}<span class="muted">${esc(r.kind)}</span></li>`).join("")}</ul>` : ""}
-  </article>`).join("")}</div>
-</div></section>
+<noscript><div class="wrap"><p class="body-lg">The board needs JavaScript to draw. The research lives on <a class="kn-link" href="/interests/research/">its own page</a>.</p></div></noscript>
 <script type="application/json" id="pcb-data">${JSON.stringify(board).replace(/</g, "\\u003c")}</script>`,
 });
 
