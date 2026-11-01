@@ -275,7 +275,7 @@ pages["/interests/"] = page({
   body: `
 <section class="pcb-hero">
   <div class="wrap pcb-top">
-    <div class="eyebrow"><span class="label">Interests · ${board.nodes.length + 1} parts on one board</span><span class="label">Pick a part</span><span class="pcb-top-go">${btn("Research and writing", "/interests/research/", { size: "sm", arrow: true })}</span></div>
+    <div class="eyebrow"><span class="label">Interests · ${board.nodes.length + 1} parts on one board</span><span class="label">Pick a part</span><button class="label pcb-flip-btn" id="pcb-flip-btn" type="button" aria-pressed="false">Or flip the board ↻</button><span class="pcb-top-go">${btn("Research and writing", "/interests/research/", { size: "sm", arrow: true })}</span></div>
     ${heroTitle("Physics, and everything wired to it.", "wired", "kn-hero-md")}
   </div>
   <div class="pcb-stage" id="pcb-stage" role="group" aria-label="A circuit board of interests. Pick a part to see the work wired to it."></div>
