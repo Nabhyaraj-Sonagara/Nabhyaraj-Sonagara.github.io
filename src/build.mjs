@@ -126,11 +126,11 @@ function footer() {
 <div class="toast label" id="toast" role="status" hidden></div>`;
 }
 
-function page({ path, title, description = site.description, active, body, scripts = [], jsonld = "", extraHead = "", bodyClass = "" }) {
+function page({ path, title, description = site.description, active, body, scripts = [], jsonld = "", extraHead = "", bodyClass = "", htmlClass = "" }) {
   const url = site.url + path;
   const full = path === "/" ? title : `${title} — ${site.name}`;
   return `<!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark"${htmlClass ? ` class="${htmlClass}"` : ""}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -151,7 +151,7 @@ function page({ path, title, description = site.description, active, body, scrip
 <meta name="twitter:title" content="${esc(full)}">
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${site.url}/og.png">
-${extraHead}<script>(function(){var d=document.documentElement,t;d.classList.add("js");try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}d.setAttribute("data-theme",t);if(t==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#f4f1ea")}})();</script>
+${extraHead}<script>(function(){var d=document.documentElement,t;d.classList.add("js");try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}d.setAttribute("data-theme",t);if(t==="light"){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#f4f1ea")}try{var s=sessionStorage,o=s.getItem("vt-o");if(o){s.removeItem("vt-o");o=o.split(",");d.style.setProperty("--vt-x",o[0]+"%");d.style.setProperty("--vt-y",o[1]+"%")}if(s.getItem("vt-pcb")){s.removeItem("vt-pcb");if(!d.classList.contains("pcb"))d.classList.add("from-pcb")}}catch(e){}})();</script>
 <link rel="icon" href="${asset("favicon.svg")}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -270,7 +270,7 @@ projects.forEach((p, idx) => {
 });
 
 pages["/interests/"] = page({
-  path: "/interests/", active: "/interests/", title: "Interests", bodyClass: "pcb-page", scripts: ["board.js"],
+  path: "/interests/", active: "/interests/", title: "Interests", bodyClass: "pcb-page", htmlClass: "pcb", scripts: ["board.js"],
   description: "Nabhyaraj Sonagara's interests as a circuit board: physics at the core, with AI, mathematics, writing, design and fintech wired to it, and the work behind each.",
   body: `
 <section class="pcb-hero">

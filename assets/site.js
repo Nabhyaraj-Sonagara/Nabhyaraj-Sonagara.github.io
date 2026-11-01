@@ -26,6 +26,27 @@
     });
   });
 
+  /* ---- page transitions to and from the Interests board ----
+     Going in, remember where the click happened so the board can open from
+     that spot. Leaving, flag it so the next page plays the power-off. */
+  var IN = /^\/interests\/?$/;
+  function leavingBoard() { try { if (root.classList.contains("pcb")) sessionStorage.setItem("vt-pcb", "1"); } catch (e) {} }
+  doc.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[href]");
+    if (!a || a.target === "_blank" || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var u; try { u = new URL(a.href); } catch (err) { return; }
+    if (u.origin !== location.origin || (u.pathname === location.pathname && u.hash)) return;
+    if (IN.test(u.pathname) && !root.classList.contains("pcb")) {
+      var x = e.clientX, y = e.clientY;
+      if (!x && !y) { var b = a.getBoundingClientRect(); x = b.left + b.width / 2; y = b.top + b.height / 2; }
+      try { sessionStorage.setItem("vt-o", (x / innerWidth * 100).toFixed(1) + "," + (y / innerHeight * 100).toFixed(1)); } catch (err) {}
+    } else if (!IN.test(u.pathname)) leavingBoard();
+  }, true);
+  window.addEventListener("pageswap", function (e) {
+    var to = e.activation && e.activation.entry && e.activation.entry.url;
+    if (to && !IN.test(new URL(to).pathname)) leavingBoard();
+  });
+
   /* ---- header turns solid once the page scrolls ---- */
   var head = doc.querySelector(".site-head");
   function onScroll() { if (head) head.classList.toggle("scrolled", window.scrollY > 8); }
