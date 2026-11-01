@@ -2,14 +2,87 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://nabhyaraj-sonagara.github.io/</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-11-01</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/ostium/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/atlas-collision-predictor/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/tinygpt/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/multi-agent-study-system/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/fine-print-reader/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/black-hole-simulator/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/lanlink/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/agent-referendum/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/paper-trading-bots/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/work/computer-diagnostic-tool/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/research/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://nabhyaraj-sonagara.github.io/quantization-aware-reasoning-distillation/</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/timeline/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/about/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nabhyaraj-sonagara.github.io/contact/</loc>
+    <lastmod>2026-11-01</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>
