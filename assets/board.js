@@ -96,8 +96,7 @@
         '<rect class="p-led p-led-ram" style="--i:' + k + '" x="' + (17 + k * 36) + '" y="77" width="20" height="4" rx="2"/>');
       return '<rect class="p-sub" x="0" y="22" width="300" height="104" rx="6"/>' +
         '<circle class="p-cut" cx="0" cy="72" r="8"/><circle class="p-cut" cx="300" cy="72" r="8"/>' +
-        c.join("") + '<rect class="p-sticker" x="100" y="92" width="100" height="16" rx="2"/>' +
-        '<text class="p-sticker-t" x="150" y="103.5" text-anchor="middle">DDR5 · 16GB</text>' + g.join("");
+        c.join("") + g.join("");
     },
     SSD: function () {
       var f = [];
@@ -138,7 +137,7 @@
   function build(mode) {
     var L = LAYOUTS[mode], c = L.cpu, half = c.s / 2, ids = Object.keys(L.nodes), svg = [];
     var blocked = [[c.x - half - 50, c.y - half - 50, c.x + half + 50, c.y + half + 50],
-      [10, 10, 380, 90], [L.w - 90, 10, L.w - 10, 90], [10, L.h - 90, 90, L.h - 10], [L.w - 90, L.h - 90, L.w - 10, L.h - 10],
+      [10, 10, 90, 90], [L.w - 90, 10, L.w - 10, 90], [10, L.h - 90, 90, L.h - 10], [L.w - 90, L.h - 90, L.w - 10, L.h - 10],
       mode === "wide" ? [L.w / 2 - 330, 24, L.w / 2 + 330, 84] : [L.w / 2 - 330, L.h - 70, L.w / 2 + 330, L.h - 10]];
     var mains = ids.map(function (id, i) {
       var n = L.nodes[id], e = entry(L, n), rt = route(n.pin, e, n.type);
@@ -154,7 +153,8 @@
     });
 
     svg.push('<svg class="pcb-svg" viewBox="0 0 ' + L.w + " " + L.h + '" preserveAspectRatio="' + L.aspect + '">');
-    svg.push('<defs><filter id="pcb-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter>' +
+    svg.push('<defs><filter id="pcb-glow" filterUnits="userSpaceOnUse" x="-100" y="-100" width="' + (L.w + 200) + '" height="' + (L.h + 200) + '"><feGaussianBlur stdDeviation="7"/></filter>' +
+      '<filter id="pcb-glow-head" filterUnits="userSpaceOnUse" x="-60" y="-60" width="120" height="120"><feGaussianBlur stdDeviation="7"/></filter>' +
       '<pattern id="pcb-dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.4" class="pcb-dot"/></pattern></defs>');
 
     /* back layer: texture, copper under the mask, small parts, holes, silkscreen */
@@ -206,8 +206,7 @@
     [[50, 50], [L.w - 50, 50], [50, L.h - 50], [L.w - 50, L.h - 50]].forEach(function (h) {
       back.push('<circle class="p-gold" cx="' + h[0] + '" cy="' + h[1] + '" r="20"/><circle class="pcb-mhole" cx="' + h[0] + '" cy="' + h[1] + '" r="11"/>');
     });
-    back.push('<text class="pcb-silk-l" x="' + (L.w / 2) + '" y="' + (mode === "wide" ? 60 : L.h - 30) + '" text-anchor="middle">NABHYARAJ-SONAGARA.GITHUB.IO · REV 11.26</text>' +
-      '<text class="pcb-silk-l" x="86" y="58">MADE IN AHMEDABAD</text>');
+    back.push('<text class="pcb-silk-l" x="' + (L.w / 2) + '" y="' + (mode === "wide" ? 60 : L.h - 30) + '" text-anchor="middle">NABHYARAJ-SONAGARA.GITHUB.IO · REV 11.26</text>');
     back.push("</g>");
     svg.push(back.join(""));
 
@@ -222,7 +221,7 @@
 
     /* CPU */
     var cpu = ['<g class="pcb-cpu" data-node="physics" tabindex="0" role="button" aria-label="Physics, the CPU">'];
-    cpu.push('<rect class="p-cpu-glow" x="' + (c.x - half - 16) + '" y="' + (c.y - half - 16) + '" width="' + (c.s + 32) + '" height="' + (c.s + 32) + '" rx="28"/>');
+    cpu.push('<rect class="p-cpu-glow" x="' + (c.x - half - 30) + '" y="' + (c.y - half - 30) + '" width="' + (c.s + 60) + '" height="' + (c.s + 60) + '" rx="38"/>');
     for (var q = -4; q <= 4; q++) {
       var o = q * (c.s / 10);
       cpu.push('<rect class="p-gold" x="' + (c.x + o - 4) + '" y="' + (c.y - half - 14) + '" width="8" height="16" rx="1.5"/><rect class="p-gold" x="' + (c.x + o - 4) + '" y="' + (c.y + half - 2) + '" width="8" height="16" rx="1.5"/>');
@@ -253,14 +252,17 @@
     front.push('<g class="t-heads"></g></g>');
     svg.push(front.join(""));
     svg.push("</svg>");
-    stage.innerHTML = svg.join("");
+    stage.innerHTML = '<div class="pcb-flip"><div class="pcb-face pcb-face-front">' + svg.join("") + "</div>" +
+      '<div class="pcb-face pcb-face-back" aria-hidden="true">' + backSide(L, mode, mains) + "</div></div>";
     state.mode = mode;
+    if (state.flipped) stage.classList.add("flipped");
+    layoutSign();
     wire();
   }
 
   /* ---------- wiring and selection ---------- */
   function wire() {
-    var s = stage.querySelector("svg");
+    var s = stage.querySelector(".pcb-face-front svg");
     els = { svg: s, layers: [].slice.call(s.querySelectorAll(".pcb-layer")), lit: {}, glow: {}, parts: {}, heads: s.querySelector(".t-heads") };
     [].forEach.call(s.querySelectorAll("[data-trace]"), function (p) { els.lit[p.getAttribute("data-trace")] = p; });
     [].forEach.call(s.querySelectorAll("[data-glow]"), function (p) { els.glow[p.getAttribute("data-glow")] = p; });
@@ -374,6 +376,104 @@
       });
     }, 1150);
   }
+
+  /* ---------- the back of the board ---------- */
+  var HEART = "M12 21s-7.5-4.6-9.6-9.2C.9 8.3 3 4.5 6.6 4.5c2.1 0 3.6 1.1 5.4 3.1 1.8-2 3.3-3.1 5.4-3.1 3.6 0 5.7 3.8 4.2 7.3C19.5 16.4 12 21 12 21z";
+  function backSide(L, mode, mains) {
+    var c = L.cpu, out = [], rand = rng(L.w * 31 + 11);
+    out.push('<svg class="pcb-svg" viewBox="0 0 ' + L.w + " " + L.h + '" preserveAspectRatio="' + L.aspect + '">');
+    out.push('<defs><clipPath id="b-clip"><rect x="16" y="16" width="' + (L.w - 32) + '" height="' + (L.h - 32) + '" rx="36"/></clipPath></defs>');
+    out.push('<rect class="b-panel" x="16" y="16" width="' + (L.w - 32) + '" height="' + (L.h - 32) + '" rx="36"/><g clip-path="url(#b-clip)">');
+    /* the same copper, seen from underneath: every trace mirrored */
+    out.push('<g transform="translate(' + L.w + ' 0) scale(-1 1)">');
+    mains.forEach(function (t) { out.push('<path class="b-trace" d="' + t.d + '"/><path class="b-trace thin" d="' + t.d2 + '"/>'); });
+    /* through-hole solder joints where each part sits on the front */
+    Object.keys(L.nodes).forEach(function (id) {
+      var n = L.nodes[id], x0 = n.x - L.fw / 2, y1 = n.y + L.fh / 2 - 14;
+      for (var k = 0; k < 10; k++) out.push('<circle class="b-joint" cx="' + r(x0 + 24 + k * (L.fw - 48) / 9) + '" cy="' + r(y1) + '" r="7"/>');
+    });
+    out.push("</g>");
+    /* a few long runs on the back layer */
+    for (var i = 0; i < (mode === "wide" ? 16 : 12); i++) {
+      var y = 80 + Math.round(rand() * (L.h - 160) / 20) * 20, x = 80 + Math.round(rand() * (L.w - 160) / 20) * 20;
+      var len = 120 + Math.round(rand() * 8) * 30, up = rand() < 0.5 ? -1 : 1, d;
+      if (rand() < 0.5) d = "M" + x + " " + y + " h" + len + " l" + 30 + " " + 30 * up + " h" + Math.round(len / 2);
+      else d = "M" + x + " " + y + " v" + Math.round(len / 2) + " l" + 30 * up + " 30 v" + Math.round(len / 3);
+      out.push('<path class="b-run" d="' + d + '"/><circle class="b-joint" cx="' + x + '" cy="' + y + '" r="5"/>');
+    }
+    out.push("</g>");
+    [[50, 50], [L.w - 50, 50], [50, L.h - 50], [L.w - 50, L.h - 50]].forEach(function (h) {
+      out.push('<circle class="p-gold" cx="' + h[0] + '" cy="' + h[1] + '" r="20"/><circle class="pcb-mhole" cx="' + h[0] + '" cy="' + h[1] + '" r="11"/>');
+    });
+    /* the maker's mark, in the middle */
+    var lines = mode === "wide" ? [["Made in Ahmedabad with", "♥", "by Claude and Nabhyaraj"]] : [["Made in Ahmedabad"], ["with", "♥", "by Claude"], ["and Nabhyaraj"]];
+    var fs = mode === "wide" ? 64 : 62, lh = fs * 1.25, top = c.y - (lines.length - 1) * lh / 2;
+    var plateW = mode === "wide" ? 1500 : 820, plateH = lines.length * lh + 90;
+    out.push('<rect class="b-plate" x="' + (c.x - plateW / 2) + '" y="' + r(top - fs * 0.35 - 45) + '" width="' + plateW + '" height="' + r(plateH) + '" rx="22"/>');
+    out.push('<g class="b-sign" data-fs="' + fs + '">');
+    lines.forEach(function (ln, li) {
+      var y = r(top + li * lh + fs * 0.35);
+      out.push('<g class="b-line" data-y="' + y + '" data-cx="' + c.x + '">' + ln.map(function (part) {
+        return part === "♥" ? '<g class="b-heart-g"><path class="b-heart" d="' + HEART + '"/></g>' : '<text class="b-text" y="' + y + '">' + esc(part) + "</text>";
+      }).join("") + "</g>");
+    });
+    out.push("</g>");
+    out.push('<text class="pcb-silk-l" x="' + c.x + '" y="' + r(top - fs * 0.35 - 70) + '" text-anchor="middle">BOTTOM LAYER · REV 11.26</text>');
+    out.push('<text class="pcb-silk-l" x="' + c.x + '" y="' + r(top - fs * 0.35 - 45 + plateH + 44) + '" text-anchor="middle">CLICK TO FLIP BACK</text>');
+    out.push("</svg>");
+    return out.join("");
+  }
+  /* centre each line of the mark, leaving room for the heart between words */
+  function layoutSign() {
+    var sign = stage.querySelector(".b-sign");
+    if (!sign) return;
+    var fs = parseFloat(sign.getAttribute("data-fs")), gap = fs * 0.28, hs = fs * 0.9, widest = 0;
+    [].forEach.call(sign.querySelectorAll(".b-line"), function (line) {
+      var y = parseFloat(line.getAttribute("data-y")), cx = parseFloat(line.getAttribute("data-cx"));
+      var items = [].slice.call(line.children), widths = items.map(function (el) {
+        if (el.tagName.toLowerCase() === "text") { try { return el.getComputedTextLength(); } catch (e) { return el.textContent.length * fs * 0.5; } }
+        return hs;
+      });
+      var total = widths.reduce(function (a, b) { return a + b; }, 0) + gap * (items.length - 1), x = cx - total / 2;
+      widest = Math.max(widest, total);
+      items.forEach(function (el, i) {
+        if (el.tagName.toLowerCase() === "text") el.setAttribute("x", r(x));
+        else el.setAttribute("transform", "translate(" + r(x) + " " + r(y - hs * 0.82) + ") scale(" + r(hs / 24 * 100) / 100 + ")");
+        x += widths[i] + gap;
+      });
+    });
+    var plate = stage.querySelector(".b-plate"), mode = LAYOUTS[state.mode];
+    if (plate && widest) {
+      var w = Math.min(widest + fs * 1.6, mode.w - 120);
+      plate.setAttribute("x", r(mode.cpu.x - w / 2)); plate.setAttribute("width", r(w));
+    }
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutSign);
+
+  /* ---------- flipping: click empty board, or the hint ---------- */
+  state.flipped = false;
+  var flipAnim = null;
+  function flip() {
+    var el = stage.querySelector(".pcb-flip");
+    if (!el) return;
+    var from = state.flipped ? 180 : 0, to = state.flipped ? 0 : 180;
+    state.flipped = !state.flipped;
+    stage.classList.toggle("flipped", state.flipped);
+    if (flipBtn) flipBtn.setAttribute("aria-pressed", state.flipped ? "true" : "false");
+    if (reduced || !el.animate) return;
+    if (flipAnim) flipAnim.cancel();
+    flipAnim = el.animate([
+      { transform: "rotateY(" + from + "deg)" },
+      { transform: "rotateY(" + (from + to) / 2 + "deg) rotateX(6deg) scale(.86)", offset: 0.5 },
+      { transform: "rotateY(" + to + "deg)" }
+    ], { duration: 1300, easing: "cubic-bezier(0.65, 0, 0.35, 1)" });
+  }
+  stage.addEventListener("click", function (e) {
+    if (e.target.closest && e.target.closest("[data-node]")) return;
+    flip();
+  });
+  var flipBtn = document.getElementById("pcb-flip-btn");
+  if (flipBtn) flipBtn.addEventListener("click", flip);
 
   stage.addEventListener("pointermove", function (e) {
     if (e.pointerType !== "mouse") return;
