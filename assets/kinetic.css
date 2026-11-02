@@ -443,10 +443,19 @@ body.pcb-page {
 html:not(.js) .pcb-stage, html:not(.js) .pcb-bar { display: none; }
 .pcb-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .pcb-stage { perspective: 2600px; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.pcb-tilt { position: absolute; transform-style: preserve-3d; }
 .pcb-flip { position: absolute; inset: 0; transform-style: preserve-3d; }
-.pcb-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.pcb-face-back { transform: rotateY(180deg); pointer-events: none; }
+.pcb-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: translateZ(calc(var(--t, 12px) / 2)); }
+.pcb-face-back { transform: rotateY(180deg) translateZ(calc(var(--t, 12px) / 2)); pointer-events: none; }
+/* the board's thickness: thin layers stacked between the two faces, seen edge-on mid-flip */
+.pcb-slice { position: absolute; inset: var(--inset, 12px); border-radius: var(--rad, 28px); background: var(--c); pointer-events: none; transform: translateZ(calc(var(--f) * (var(--t, 12px) - 2px))); }
+/* at rest, a hard edge and a soft shadow under the panel give it a profile */
+.pcb-plate { position: absolute; inset: var(--inset, 12px); border-radius: var(--rad, 28px); pointer-events: none;
+  box-shadow: 0 calc(var(--t, 12px) * .5) 0 #b3ad83, 0 calc(var(--t, 12px) * .5 + 3px) 0 #05391c, 0 calc(var(--t, 12px) + 18px) 40px rgba(0, 20, 8, .45); }
+.pcb-face .pcb-svg { z-index: 1; }
+.f-panel { fill: url(#f-fill); stroke: rgba(255, 255, 255, .14); stroke-width: 2; }
 .pcb-stage .pcb-flip { transform: rotateY(0deg); }
+.pcb-tilt { transition: none; }
 .pcb-stage.flipped .pcb-flip { transform: rotateY(180deg); }
 .pcb-stage.flipped .pcb-face-front { pointer-events: none; }
 .pcb-stage.flipped .pcb-face-back { pointer-events: auto; }
