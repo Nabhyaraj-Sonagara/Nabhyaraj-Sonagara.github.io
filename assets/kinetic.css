@@ -442,7 +442,7 @@ body.pcb-page {
 .pcb-stage.go { opacity: 1; }
 html:not(.js) .pcb-stage, html:not(.js) .pcb-bar { display: none; }
 .pcb-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.pcb-stage { perspective: 2600px; cursor: pointer; }
+.pcb-stage { perspective: 2600px; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .pcb-flip { position: absolute; inset: 0; transform-style: preserve-3d; }
 .pcb-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .pcb-face-back { transform: rotateY(180deg); pointer-events: none; }

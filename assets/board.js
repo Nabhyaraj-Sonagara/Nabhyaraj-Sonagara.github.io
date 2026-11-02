@@ -468,8 +468,24 @@
       { transform: "rotateY(" + to + "deg)" }
     ], { duration: 1300, easing: "cubic-bezier(0.65, 0, 0.35, 1)" });
   }
+  /* A short tap or click on empty board flips it. Taps are read from pointer
+     events, because phones do not reliably send a click for empty space
+     inside a 3D-transformed SVG; the click handler covers everything else. */
+  var tap = null, lastTap = 0;
+  function onPart(t) { return !!(t && t.closest && t.closest("[data-node]")); }
+  stage.addEventListener("pointerdown", function (e) {
+    tap = { x: e.clientX, y: e.clientY, t: Date.now(), part: onPart(e.target) };
+  });
+  stage.addEventListener("pointerup", function (e) {
+    var s = tap; tap = null;
+    if (!s || s.part || onPart(e.target)) return;
+    if (Math.abs(e.clientX - s.x) > 12 || Math.abs(e.clientY - s.y) > 12 || Date.now() - s.t > 600) return;
+    lastTap = Date.now();
+    flip();
+  });
+  stage.addEventListener("pointercancel", function () { tap = null; });
   stage.addEventListener("click", function (e) {
-    if (e.target.closest && e.target.closest("[data-node]")) return;
+    if (Date.now() - lastTap < 800 || onPart(e.target)) return;
     flip();
   });
   var flipBtn = document.getElementById("pcb-flip-btn");

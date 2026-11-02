@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap">
-<link rel="stylesheet" href="/assets/kinetic.css?v=74d702785b">
+<link rel="stylesheet" href="/assets/kinetic.css?v=280293b8f8">
 </head>
 <body>
 <a class="kn-btn kn-btn-primary kn-btn-sm skip" href="#main"><span class="kn-btn-label">Skip to content</span></a>
@@ -69,7 +69,7 @@
   </div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="heading">The write-up</h2><span class="label">4 parts</span></div>
+  <div class="shead"><h2 class="heading">The write-up</h2></div>
   <div class="notes"><div class="note kn-reveal" style="--d:0ms"><h2>Why</h2><p>Studying produced a pile of things that never spoke to each other: voice notes, lecture recordings and a vault of markdown. One agent doing all four jobs did none of them well, so I stopped asking it to.</p></div><div class="note kn-reveal" style="--d:90ms"><h2>What I built</h2><p>A capture agent that files voice notes into the vault, a recall agent that quizzes me from them, a coverage agent that finds the gaps, and an agent that turns a lecture into a study guide. They share the vault as common ground instead of passing messages around, so I can replace any one of them without touching the others.</p></div><div class="note kn-reveal" style="--d:180ms"><h2>The guardrail</h2><p>Every write from every agent passes through one fail-closed gate: each agent is scoped to its own folder, writes can only create or append, and every decision lands in an audit log. A dictated “delete every file” just becomes a note that says that. There is no delete to reach.</p></div><div class="note kn-reveal" style="--d:270ms"><h2>What is next</h2><p>Splitting the coverage agent further, and finding a measure that shows whether the split actually helped.</p></div></div>
 </div></section>
 <section class="section"><div class="wrap">

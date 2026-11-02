@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap">
-<link rel="stylesheet" href="/assets/kinetic.css?v=74d702785b">
+<link rel="stylesheet" href="/assets/kinetic.css?v=280293b8f8">
 </head>
 <body>
 <a class="kn-btn kn-btn-primary kn-btn-sm skip" href="#main"><span class="kn-btn-label">Skip to content</span></a>
@@ -37,7 +37,7 @@
 <main id="main">
 
 <section class="hero"><div class="wrap">
-  <div class="eyebrow"><a class="kn-link" href="/interests/research/">← Research</a><span class="label">In progress</span><span class="label">Started September 2026</span></div>
+  <div class="eyebrow"><a class="kn-link" href="/interests/research/">← Research</a></div>
   <h1 class="kn-hero kn-hero-md" aria-label="Quantization-aware reasoning distillation"><span class="kn-hero-word" aria-hidden="true"><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:0">Q</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:1">u</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:2">a</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:3">n</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:4">t</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:5">i</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:6">z</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:7">a</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:8">t</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:9">i</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:10">o</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:11">n</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:12">-</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:13">a</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:14">w</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:15">a</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:16">r</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:17">e</span></span></span> <span class="kn-hero-word kn-hero-hl" aria-hidden="true"><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:18">r</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:19">e</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:20">a</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:21">s</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:22">o</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:23">n</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:24">i</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:25">n</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:26">g</span></span></span> <span class="kn-hero-word" aria-hidden="true"><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:27">d</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:28">i</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:29">s</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:30">t</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:31">i</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:32">l</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:33">l</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:34">a</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:35">t</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:36">i</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:37">o</span></span><span class="kn-hero-mask"><span class="kn-hero-ch" style="--i:38">n</span></span></span></h1>
   <p class="body-lg kn-reveal" style="--d:600ms">Squeeze a reasoning model to low bit-widths and it does not simply get worse. It misjudges how long to think. This page is the working record of an independent paper I started in September 2026.</p>
 </div></section>
@@ -57,26 +57,26 @@
   <div class="aside kn-reveal" style="--d:120ms"><span class="label">Where the size goes</span><p>30M weights at FP16 is 60 MB. At Q4_K_M it is 16.9 MB, not 15 MB — the extra comes from the per-block scales every real format carries. The instrument uses published bits-per-weight, not the nominal bit count.</p></div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">The question</h2><span class="label">Narrow on purpose</span></div>
+  <div class="shead"><h2 class="display">The question</h2></div>
   <div class="split">
     <div class="prose kn-reveal"><p>A reasoning model decides, without being told, how many steps to spend on a problem. Quantization changes the weights that decision comes out of. My question is deliberately narrow: does low-bit quantization move chain-of-thought length away from the length a problem actually needs, and does it move in a consistent direction?</p><p>The failure has two sides. On hard problems the chain is cut short, and the model commits early to an answer it has not earned. On easy problems it runs long, spending steps on something it had already solved. The first costs accuracy. The second costs accuracy and money.</p><p>Both look the same from the outside — a number on a benchmark — which is part of why the effect is easy to miss.</p></div>
     <div class="aside kn-reveal" style="--d:120ms"><span class="label">In one line</span><p>Does low-bit quantization miscalibrate how long a model reasons, and can distillation put the calibration back?</p><span class="label">Status</span><p>Drafting. Introduction first. No results to report yet.</p></div>
   </div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">Why it is worth asking</h2><span class="label">The practical end</span></div>
+  <div class="shead"><h2 class="display">Why it is worth asking</h2></div>
   <div class="prose kn-reveal"><p>Low-bit inference is how a model reaches hardware that is not a datacentre: a phone, a single-board computer, a microcontroller. I came to the question from the other direction, while trying to get <a class="kn-link" href="/work/tinygpt/">a 30-million-parameter model I wrote from scratch</a> onto hardware that fits in a pocket. Quantization is the step that makes that possible, and it is the step where the model's behaviour started to shift in ways the accuracy number did not explain.</p><p>Most quantization work measures the quality of the final answer. Much less of it measures the shape of the reasoning that produced the answer. If the reasoning budget is miscalibrated, a benchmark score can hold steady while what the model is doing underneath changes a great deal — and the gap shows up later, on the problems nobody tested.</p></div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">What I am measuring</h2><span class="label">Being written</span></div>
+  <div class="shead"><h2 class="display">What I am measuring</h2></div>
   <div class="prose kn-reveal"><p>The models, the bit-widths, how the length a problem needs is defined, the metric and the distillation setup are still being written. There are no results on this page because there are none yet. When there are, they go here with the method that produced them, including the runs that did not work.</p></div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">Where it stands</h2><span class="label">Updated as it moves</span></div>
+  <div class="shead"><h2 class="display">Where it stands</h2></div>
   <div class="rows"><div class="row kn-reveal" style="--d:0ms"><span class="label">Sept 2026</span><span><span class="row-t">Started drafting</span><span class="row-d">Introduction first, so that the question had to be stated plainly before anything else was written.</span></span><span class="label">Writing</span></div><div class="row kn-reveal" style="--d:60ms"><span class="label">Weekly</span><span><span class="row-t">One paper a week, with notes</span><span class="row-d">Structured reading notes, turned into summaries I can cite later by a small tool I built for it.</span></span><span class="label">Reading</span></div></div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">Reading</h2><span class="label">From the weekly notes</span></div>
+  <div class="shead"><h2 class="display">Reading</h2></div>
   <div class="prose kn-reveal"><p>The papers this one is built on. I will add each as I write its note, rather than listing work I have not read.</p></div>
   
 </div></section>
