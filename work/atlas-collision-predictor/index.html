@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap">
-<link rel="stylesheet" href="/assets/kinetic.css?v=74d702785b">
+<link rel="stylesheet" href="/assets/kinetic.css?v=280293b8f8">
 </head>
 <body>
 <a class="kn-btn kn-btn-primary kn-btn-sm skip" href="#main"><span class="kn-btn-label">Skip to content</span></a>
@@ -58,7 +58,7 @@
   </div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="heading">The write-up</h2><span class="label">3 parts</span></div>
+  <div class="shead"><h2 class="heading">The write-up</h2></div>
   <div class="notes"><div class="note kn-reveal" style="--d:0ms"><h2>Why</h2><p>Most collisions at the LHC are boring. Higgs production is roughly one event in ten billion, so the real problem is a needle in a haystack: does this pile of tracks and energy deposits look like the signal, or like the background?</p></div><div class="note kn-reveal" style="--d:90ms"><h2>What I built</h2><p>The whole pipeline. Real ATLAS events flattened to one row each, a small network trained from scratch in NumPy with hand-written backprop, and its weights exported to a header-only C++17 engine with no machine-learning library of any kind. Tests prove both sides agree bit for bit, and the viewer re-runs the model every frame while you fly around the detector.</p></div><div class="note kn-reveal" style="--d:180ms"><h2>How it did</h2><p>ROC AUC 0.808 on 83,868 held-out real events, against a 0.5 baseline, at 262 nanoseconds per event. The number is held down on purpose: the schema has no slot for the hadronic tau, the best feature in the dataset, and the write-up says so rather than hiding it.</p></div></div>
 </div></section>
 <section class="section"><div class="wrap">

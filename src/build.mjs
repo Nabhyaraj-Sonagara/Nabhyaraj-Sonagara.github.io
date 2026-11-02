@@ -188,7 +188,7 @@ pages["/"] = page({
   })}</script>\n`,
   body: `
 <section class="hero"><div class="wrap">
-  <div class="eyebrow">${nowTag("Open to internships in tech and physics")}<span class="label">${site.city}</span></div>
+  <div class="eyebrow">${nowTag("Open to internships in tech and physics")}</div>
   ${heroTitle("I build small models and sharp tools.", "small")}
   <p class="body-lg kn-reveal" style="--d:500ms">I am a student of AI, physics and mathematics, heading for work as an experimental physicist and AI researcher. I write artificial neural networks and decode the world with a team of AI agents, one step at a time.</p>
   <div class="row-actions kn-reveal" style="--d:650ms">${btn("See the work", "/work/", { arrow: true })}${btn("Get in touch", "/contact/", { variant: "ghost" })}</div>
@@ -224,7 +224,6 @@ pages["/work/"] = page({
   description: `${projects.length} projects by ${site.name}: small models from scratch, particle physics tools, agents, apps and plugins.`,
   body: `
 <section class="hero"><div class="wrap">
-  <div class="eyebrow"><span class="label">${projects.length} projects</span><span class="label">Most recent first, more or less</span></div>
   ${heroTitle("Things I have built.", "built")}
   <p class="body-lg kn-reveal" style="--d:450ms">From a language model with no framework under it to a particle detector you can fly around. Open any of them for the full write-up.</p>
 </div></section>
@@ -257,7 +256,7 @@ projects.forEach((p, idx) => {
   </div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="heading">The write-up</h2><span class="label">${p.notes.length} parts</span></div>
+  <div class="shead"><h2 class="heading">The write-up</h2></div>
   <div class="notes">${p.notes.map(([h, t], i) => `<div class="note kn-reveal" style="--d:${i * 90}ms"><h2>${esc(h)}</h2><p>${esc(t)}</p></div>`).join("")}</div>
 </div></section>
 <section class="section"><div class="wrap">
@@ -275,7 +274,7 @@ pages["/interests/"] = page({
   body: `
 <section class="pcb-hero">
   <div class="wrap pcb-top">
-    <div class="eyebrow"><span class="label">Interests · ${board.nodes.length + 1} parts on one board</span><span class="label">Pick a part</span><button class="label pcb-flip-btn" id="pcb-flip-btn" type="button" aria-pressed="false">Or flip the board ↻</button><span class="pcb-top-go">${btn("Research and writing", "/interests/research/", { size: "sm", arrow: true })}</span></div>
+    <div class="eyebrow"><button class="label pcb-flip-btn" id="pcb-flip-btn" type="button" aria-pressed="false">Flip the board ↻</button><span class="pcb-top-go">${btn("Research and writing", "/interests/research/", { size: "sm", arrow: true })}</span></div>
     ${heroTitle("Physics, and everything wired to it.", "wired", "kn-hero-md")}
   </div>
   <div class="pcb-stage" id="pcb-stage" role="group" aria-label="A circuit board of interests. Pick a part to see the work wired to it."></div>
@@ -291,7 +290,7 @@ pages["/interests/research/"] = page({
   description: "Research and writing by Nabhyaraj Sonagara: an independent paper on quantization-aware reasoning distillation, essays and weekly paper notes.",
   body: `
 <section class="hero"><div class="wrap">
-  <div class="eyebrow">${textLink("← Interests", "/interests/", false)}<span class="label">Paper notes every week</span></div>
+  <div class="eyebrow">${textLink("← Interests", "/interests/", false)}</div>
   ${heroTitle("Research and writing.", "research")}
   <p class="body-lg kn-reveal" style="--d:450ms">${esc(research.intro)}</p>
   <div class="row-actions kn-reveal" style="--d:600ms">${btn("Read the paper's record", "/quantization-aware-reasoning-distillation/", { arrow: true })}</div>
@@ -313,7 +312,7 @@ pages["/quantization-aware-reasoning-distillation/"] = page({
   scripts: ["instrument.js"],
   body: `
 <section class="hero"><div class="wrap">
-  <div class="eyebrow">${textLink("← Research", "/interests/research/", false)}<span class="label">In progress</span><span class="label">Started September 2026</span></div>
+  <div class="eyebrow">${textLink("← Research", "/interests/research/", false)}</div>
   ${heroTitle("Quantization-aware reasoning distillation", "reasoning", "kn-hero-md")}
   <p class="body-lg kn-reveal" style="--d:600ms">${esc(paper.lede)}</p>
 </div></section>
@@ -333,26 +332,26 @@ pages["/quantization-aware-reasoning-distillation/"] = page({
   <div class="aside kn-reveal" style="--d:120ms"><span class="label">Where the size goes</span><p>${esc(paper.sizeNote)}</p></div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">The question</h2><span class="label">Narrow on purpose</span></div>
+  <div class="shead"><h2 class="display">The question</h2></div>
   <div class="split">
     <div class="prose kn-reveal">${paper.question.map((t) => `<p>${esc(t)}</p>`).join("")}</div>
     <div class="aside kn-reveal" style="--d:120ms"><span class="label">In one line</span><p>${esc(paper.oneLine)}</p><span class="label">Status</span><p>${esc(paper.status)}</p></div>
   </div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">Why it is worth asking</h2><span class="label">The practical end</span></div>
+  <div class="shead"><h2 class="display">Why it is worth asking</h2></div>
   <div class="prose kn-reveal">${paper.why.map((t) => `<p>${t}</p>`).join("")}</div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">What I am measuring</h2><span class="label">Being written</span></div>
+  <div class="shead"><h2 class="display">What I am measuring</h2></div>
   <div class="prose kn-reveal">${paper.measuring.length ? paper.measuring.map((t) => `<p>${esc(t)}</p>`).join("") : `<p>${esc(paper.measuringNote)}</p>`}</div>
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">Where it stands</h2><span class="label">Updated as it moves</span></div>
+  <div class="shead"><h2 class="display">Where it stands</h2></div>
   ${rows(paper.stands)}
 </div></section>
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">Reading</h2><span class="label">From the weekly notes</span></div>
+  <div class="shead"><h2 class="display">Reading</h2></div>
   <div class="prose kn-reveal"><p>The papers this one is built on. I will add each as I write its note, rather than listing work I have not read.</p></div>
   ${paper.reading.length ? rows(paper.reading) : ""}
 </div></section>
@@ -374,7 +373,6 @@ pages["/timeline/"] = page({
   description: "What Nabhyaraj Sonagara has been building, researching and writing, most recent first.",
   body: `
 <section class="hero"><div class="wrap">
-  <div class="eyebrow"><span class="label">Most recent first</span></div>
   ${heroTitle("The story so far.", "story")}
 </div></section>
 <section class="section" style="padding-top:0"><div class="wrap">
@@ -394,7 +392,6 @@ pages["/about/"] = page({
   description: "About Nabhyaraj Sonagara: a student of AI, physics and mathematics in Ahmedabad who learns by rebuilding things from scratch.",
   body: `
 <section class="hero"><div class="wrap">
-  <div class="eyebrow"><span class="label">The short version</span><span class="label">${site.city}</span></div>
   ${heroTitle("I learn by rebuilding.", "rebuilding")}
 </div></section>
 <section class="section" style="padding-top:0"><div class="wrap split">
@@ -433,7 +430,6 @@ const notFound = page({
   path: "/404.html", active: "", title: "Not found",
   body: `
 <section class="hero"><div class="wrap">
-  <div class="eyebrow"><span class="label">404</span></div>
   ${heroTitle("Lost in the wires.", "wires")}
   <p class="body-lg kn-reveal" style="--d:400ms">There is nothing at this address. The rest of the site is still here.</p>
   <div class="row-actions kn-reveal" style="--d:550ms">${btn("Go home", "/", { arrow: true })}${btn("See the work", "/work/", { variant: "ghost" })}</div>
