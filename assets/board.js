@@ -158,6 +158,9 @@
       '<pattern id="pcb-dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1.4" class="pcb-dot"/></pattern></defs>');
 
     /* back layer: texture, copper under the mask, small parts, holes, silkscreen */
+    svg.push('<defs><clipPath id="f-clip"><rect x="16" y="16" width="' + (L.w - 32) + '" height="' + (L.h - 32) + '" rx="36"/></clipPath>' +
+      '<radialGradient id="f-fill" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#0b9a4b"/><stop offset=".6" stop-color="#088540"/><stop offset="1" stop-color="#066c34"/></radialGradient></defs>');
+    svg.push('<rect class="f-panel" x="16" y="16" width="' + (L.w - 32) + '" height="' + (L.h - 32) + '" rx="36"/><g clip-path="url(#f-clip)">');
     var back = ['<g class="pcb-layer pcb-back" data-depth="0.4"><rect x="-200" y="-200" width="' + (L.w + 400) + '" height="' + (L.h + 400) + '" fill="url(#pcb-dots)"/>'];
     var rand = rng(L.w * 13 + 7);
     function free(x, y, m) {
@@ -251,10 +254,17 @@
     });
     front.push('<g class="t-heads"></g></g>');
     svg.push(front.join(""));
-    svg.push("</svg>");
-    stage.innerHTML = '<div class="pcb-flip"><div class="pcb-face pcb-face-front">' + svg.join("") + "</div>" +
-      '<div class="pcb-face pcb-face-back" aria-hidden="true">' + backSide(L, mode, mains) + "</div></div>";
+    svg.push("</g></svg>");
+    var slices = [], N = 14;
+    for (var si = 0; si < N; si++) {
+      var f = si / (N - 1), col = si === 0 || si === N - 1 ? "#04542a" : (si === Math.floor(N / 2) ? "#c58b3a" : (f < 0.2 || f > 0.8 ? "#a39e74" : "#bdb78c"));
+      slices.push('<div class="pcb-slice" style="--f:' + r(f - 0.5) + ";--c:" + col + '"></div>');
+    }
+    stage.innerHTML = '<div class="pcb-tilt"><div class="pcb-flip">' +
+      '<div class="pcb-face pcb-face-front"><div class="pcb-plate"></div>' + svg.join("") + "</div>" + slices.join("") +
+      '<div class="pcb-face pcb-face-back" aria-hidden="true"><div class="pcb-plate"></div>' + backSide(L, mode, mains) + "</div></div></div>";
     state.mode = mode;
+    fitBoard();
     if (state.flipped) stage.classList.add("flipped");
     layoutSign();
     wire();
@@ -332,15 +342,28 @@
     heads.push({ id: id, el: c, len: path.getTotalLength(), t0: performance.now(), dur: dur, back: back });
   }
 
-  var px = 0, py = 0, tx = 0, ty = 0, hasPointer = false, nextPacket = 0;
+  var px = 0, py = 0, tx = 0, ty = 0, hasPointer = false, nextPacket = 0, tiltEl = null;
+  /* size the 3D board to the drawing, centred in the stage */
+  function fitBoard() {
+    var L = LAYOUTS[state.mode], W = stage.clientWidth, H = stage.clientHeight;
+    var s = Math.min(W / L.w, H / L.h), bw = L.w * s, bh = L.h * s;
+    tiltEl = stage.querySelector(".pcb-tilt");
+    if (!tiltEl) return;
+    tiltEl.style.width = r(bw) + "px"; tiltEl.style.height = r(bh) + "px";
+    tiltEl.style.left = r((W - bw) / 2) + "px"; tiltEl.style.top = r((H - bh) / 2) + "px";
+    stage.style.setProperty("--inset", r(16 * s) + "px");
+    stage.style.setProperty("--rad", r(36 * s) + "px");
+    stage.style.setProperty("--t", r(Math.max(8, Math.min(18, bw * 0.012))) + "px");
+  }
   function loop(now) {
     if (!reduced) {
       var gx = hasPointer ? tx : Math.sin(now / 4600) * 0.4, gy = hasPointer ? ty : Math.cos(now / 5300) * 0.4;
       px += (gx - px) * 0.03; py += (gy - py) * 0.03;
       els.layers.forEach(function (l) {
         var d = parseFloat(l.getAttribute("data-depth"));
-        l.setAttribute("transform", "translate(" + r(-px * 14 * d) + " " + r(-py * 10 * d) + ")");
+        l.setAttribute("transform", "translate(" + r(-px * 8 * d) + " " + r(-py * 6 * d) + ")");
       });
+      if (tiltEl) tiltEl.style.transform = "rotateX(" + r(-py * 3.5) + "deg) rotateY(" + r(px * 4.5) + "deg)";
     }
     for (var i = heads.length - 1; i >= 0; i--) {
       var h = heads[i], k = Math.min(1, (now - h.t0) / h.dur), e = ease(k);
@@ -464,7 +487,7 @@
     if (flipAnim) flipAnim.cancel();
     flipAnim = el.animate([
       { transform: "rotateY(" + from + "deg)" },
-      { transform: "rotateY(" + (from + to) / 2 + "deg) rotateX(6deg) scale(.86)", offset: 0.5 },
+      { transform: "rotateY(" + (from + to) / 2 + "deg) rotateX(8deg) scale(.84)", offset: 0.5 },
       { transform: "rotateY(" + to + "deg)" }
     ], { duration: 1300, easing: "cubic-bezier(0.65, 0, 0.35, 1)" });
   }
@@ -503,7 +526,7 @@
   var rz = 0;
   window.addEventListener("resize", function () {
     clearTimeout(rz);
-    rz = setTimeout(function () { var m = modeFor(); if (m !== state.mode) { heads.forEach(function (h) { h.el.remove(); }); heads = []; state.booted = true; build(m); } }, 150);
+    rz = setTimeout(function () { var m = modeFor(); if (m !== state.mode) { heads.forEach(function (h) { h.el.remove(); }); heads = []; state.booted = true; build(m); } else fitBoard(); }, 150);
   });
 
   build(modeFor());
