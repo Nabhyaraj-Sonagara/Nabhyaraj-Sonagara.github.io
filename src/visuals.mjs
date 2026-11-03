@@ -171,7 +171,6 @@ function paperTrading() {
   }).join("");
   const line = closes.map((c, i) => `${46 + i * 21},${c}`).join(" ");
   return wrap(`
-    <text class="b-f" x="34" y="34">PAPER ONLY</text>
     <line class="c-s" x1="30" y1="170" x2="290" y2="170" stroke-width="2"/>
     ${candles}
     <polyline class="a-s" points="${line}" stroke-width="2.5" pathLength="1" stroke-dasharray="1" style="${anim("v-draw", 8, 0, "var(--ease-float)", "infinite")}"/>`,

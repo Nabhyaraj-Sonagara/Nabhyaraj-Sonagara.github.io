@@ -90,7 +90,7 @@ function interestsLink(label = "See how my interests connect") {
 function contactLine() {
   return `<section class="section"><div class="wrap">
   <div class="cta-line kn-reveal">
-    <h2 class="display">Let us <span class="hl">talk</span>.</h2>
+    <h2 class="display">Let's <span class="hl">connect</span>.</h2>
     <p class="body-lg muted">I am looking for internships and research work in tech and physics. This address is a real one and I answer it.</p>
     <div class="row-actions">
       ${btn("Email me", `mailto:${site.email}`, { arrow: true })}
@@ -111,7 +111,7 @@ function header(active) {
     : `<li><a class="kn-nav-item" href="${n.href}"${n.href === active ? ' aria-current="page"' : ""}>${n.label}</a></li>`).join("");
   return `<a class="kn-btn kn-btn-primary kn-btn-sm skip" href="#main"><span class="kn-btn-label">Skip to content</span></a>
 <header class="site-head"><div class="wrap bar">
-  <a class="mark" href="/">Nabhyaraj<span>.</span></a>
+  <a class="mark" href="/">Nabhyaraj</a>
   <nav class="kn-nav" aria-label="Main"><ul class="kn-nav-list">${items(false)}</ul><div class="kn-nav-hl" aria-hidden="true"><ul class="kn-nav-list">${items(true)}</ul></div></nav>
   <button class="theme-btn" type="button" aria-label="Switch theme">${ICON_MOON}${ICON_SUN}</button>
 </div></header>`;
@@ -190,7 +190,7 @@ pages["/"] = page({
 <section class="hero"><div class="wrap">
   <div class="eyebrow">${nowTag("Open to internships in tech and physics")}</div>
   ${heroTitle("I build small models and sharp tools.", "small")}
-  <p class="body-lg kn-reveal" style="--d:500ms">Hey, I'm Nabhyaraj. I like studying physics, AI and writing opinionated articles to express myself. I am proficient in Python and am mastering C++. I also use Omarchy linux (Arch, by the way ;).</p>
+  <p class="body-lg kn-reveal" style="--d:500ms">Hey, I'm Nabhyaraj. I like studying physics, AI and writing opinionated articles to express myself. I am proficient in Python and am mastering C++. I also use (and highly reccomend) Omarchy linux (Arch, by the way ;)</p>
   <div class="row-actions kn-reveal" style="--d:650ms">${btn("See the work", "/work/", { arrow: true })}${btn("Get in touch", "/contact/", { variant: "ghost" })}</div>
 </div></section>
 
@@ -275,7 +275,7 @@ pages["/interests/"] = page({
 <section class="pcb-hero">
   <div class="wrap pcb-top">
     <div class="eyebrow"><button class="label pcb-flip-btn" id="pcb-flip-btn" type="button" aria-pressed="false">Flip the board ↻</button><span class="pcb-top-go">${btn("Research and writing", "/interests/research/", { size: "sm", arrow: true })}</span></div>
-    ${heroTitle("The components that keep me running.", "components", "kn-hero-md")}
+    ${heroTitle("*insert cool heading", "components", "kn-hero-md")}
   </div>
   <div class="pcb-stage" id="pcb-stage" role="group" aria-label="A circuit board of interests. Pick a part to see the work wired to it."></div>
   <div class="wrap"><div class="pcb-bar" id="pcb-bar" aria-live="polite"></div></div>
@@ -412,7 +412,7 @@ pages["/contact/"] = page({
   body: `
 <section class="hero"><div class="wrap">
   <div class="eyebrow">${nowTag("Open to internships in tech and physics")}</div>
-  ${heroTitle("Let us talk.", "talk")}
+  ${heroTitle("Let's connect.", "connect")}
 </div></section>
 <section class="section" style="padding-top:0"><div class="wrap">
   <div class="panel kn-reveal">
@@ -431,7 +431,7 @@ const notFound = page({
   body: `
 <section class="hero"><div class="wrap">
   ${heroTitle("Lost in the wires.", "wires")}
-  <p class="body-lg kn-reveal" style="--d:400ms">There is nothing at this address. The rest of the site is still here.</p>
+  <p class="body-lg kn-reveal" style="--d:400ms">You appear to have loitered off your path.</p>
   <div class="row-actions kn-reveal" style="--d:550ms">${btn("Go home", "/", { arrow: true })}${btn("See the work", "/work/", { variant: "ghost" })}</div>
 </div></section>`,
 });

@@ -2,8 +2,8 @@
  "a:I am a student of AI, physics and mathematics, heading for work as an experimental physicist and AI researcher. I write artificial neural networks and decode the world with a team of AI agents, one step at a time.": {
   "was": "I am a student of AI, physics and mathematics, heading for work as an experimental physicist and AI researcher. I write artificial neural networks and decode the world with a team of AI agents, one step at a time.",
   "wasHtml": "I am a student of AI, physics and mathematics, heading for work as an experimental physicist and AI researcher. I write artificial neural networks and decode the world with a team of AI agents, one step at a time.",
-  "text": "Hey, I'm Nabhyaraj. I like studying physics, AI and writing opinionated articles to express myself. I am proficient in Python and am mastering C++. I also use Omarchy linux (Arch, by the way ;).",
-  "html": "Hey, I'm Nabhyaraj. I like studying physics, AI and writing opinionated articles to express myself. I am proficient in Python and am mastering C++. I also use Omarchy linux (Arch, by the way ;)."
+  "text": "Hey, I'm Nabhyaraj. I like studying physics, AI and writing opinionated articles to express myself. I am proficient in Python and am mastering C++. I also use (and highly reccomend) Omarchy linux (Arch, by the way ;)",
+  "html": "Hey, I'm Nabhyaraj. I like studying physics, AI and writing opinionated articles to express myself. I am proficient in Python and am mastering C++. I also use (and highly reccomend) Omarchy linux (Arch, by the way ;)"
  },
  "a:Getting TinyGPT onto a microcontroller.": {
   "was": "Getting TinyGPT onto a microcontroller.",
@@ -68,8 +68,8 @@
  "a:Physics, and everything wired to it.": {
   "was": "Physics, and everything wired to it.",
   "wasHtml": "Physics, and everything wired to it.",
-  "text": "The components that keep me running.",
-  "html": "The components that keep me running."
+  "text": "*insert cool heading",
+  "html": "*insert cool heading"
  },
  "a:The centre of it all. I am heading for work as an experimental physicist, and I want to use AI to make physics more efficient and accessible than ever before. Physics gives the questions; every other part on this board is how I get at them.": {
   "was": "The centre of it all. I am heading for work as an experimental physicist, and I want to use AI to make physics more efficient and accessible than ever before. Physics gives the questions; every other part on this board is how I get at them.",
@@ -88,5 +88,29 @@
   "wasHtml": "The third field I study, next to AI and physics, and the thing the CPU keeps reaching for. Hand-written backprop, bits per weight, light bending around a black hole: it is all maths underneath.",
   "text": "Math is physics unbound by reality (though reality is sometimes more bizarre and unintuitive). It is the foundation on which I developed my other interests (all of which require it).",
   "html": "Math is physics unbound by reality (though reality is sometimes more bizarre and unintuitive). It is the foundation on which I developed my other interests (all of which require it)."
+ },
+ "a:There is nothing at this address. The rest of the site is still here.": {
+  "was": "There is nothing at this address. The rest of the site is still here.",
+  "wasHtml": "There is nothing at this address. The rest of the site is still here.",
+  "text": "You appear to have loitered off your path.",
+  "html": "You appear to have loitered off your path."
+ },
+ "a:Nabhyaraj.": {
+  "was": "Nabhyaraj.",
+  "wasHtml": "Nabhyaraj<span>.</span>",
+  "text": "Nabhyaraj",
+  "html": "Nabhyaraj"
+ },
+ "a:Let us talk.": {
+  "was": "Let us talk.",
+  "wasHtml": "Let us talk.",
+  "text": "Let's connect.",
+  "html": "Let's connect."
+ },
+ "a:PAPER ONLY": {
+  "was": "PAPER ONLY",
+  "wasHtml": "PAPER ONLY",
+  "text": "",
+  "html": ""
  }
 }
