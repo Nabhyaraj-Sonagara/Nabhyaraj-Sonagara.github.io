@@ -84,7 +84,7 @@ const board = {
 };
 
 function interestsLink(label = "See how my interests connect") {
-  return `<a class="row kn-reveal" href="/interests/"><span class="label">Interests</span><span><span class="row-t">${esc(label)}</span><span class="row-d">Physics is the CPU. AI, maths, writing, design and fintech are the parts wired to it.</span></span><span class="label">Board ↗</span></a>`;
+  return `<a class="row kn-reveal" href="/interests/"><span class="label">Interests</span><span><span class="row-t">${esc(label)}</span><span class="row-d">Go to a fun visual that depicts my interests in a fun and playful way.</span></span><span class="label">Board ↗</span></a>`;
 }
 
 function contactLine() {
@@ -190,22 +190,22 @@ pages["/"] = page({
 <section class="hero"><div class="wrap">
   <div class="eyebrow">${nowTag("Open to internships in tech and physics")}</div>
   ${heroTitle("I build small models and sharp tools.", "small")}
-  <p class="body-lg kn-reveal" style="--d:500ms">I am a student of AI, physics and mathematics, heading for work as an experimental physicist and AI researcher. I write artificial neural networks and decode the world with a team of AI agents, one step at a time.</p>
+  <p class="body-lg kn-reveal" style="--d:500ms">Hey, I'm Nabhyaraj. I like studying physics, AI and writing opinionated articles to express myself. I am proficient in Python and am mastering C++. I also use Omarchy linux (Arch, by the way ;).</p>
   <div class="row-actions kn-reveal" style="--d:650ms">${btn("See the work", "/work/", { arrow: true })}${btn("Get in touch", "/contact/", { variant: "ghost" })}</div>
 </div></section>
 
 <section class="section"><div class="wrap split">
   <div class="rows">${interestsLink()}</div>
   <div class="aside kn-reveal" style="--d:120ms">
-    <span class="label">Right now</span>
-    <p>Writing a paper on why low-bit models misjudge how long to think.</p>
-    <p>Getting TinyGPT onto a microcontroller.</p>
+    <span class="label">Currently</span>
+    <p>Writing a paper on why low-bit models misjudge how long to think, and using a new quantization method to prevent it.</p>
+    <p>Quantizing TinyGPT using the same methods to fit on a microcontroller</p>
     <p>Opening small businesses to AI agents with Ostium.</p>
   </div>
 </div></section>
 
 <section class="section"><div class="wrap">
-  <div class="shead"><h2 class="display">Selected work</h2>${textLink(`All ${projects.length} projects`, "/work/", false)}</div>
+  <div class="shead"><h2 class="display">Magnum Opuses (Opi?)</h2>${textLink(`All ${projects.length} projects`, "/work/", false)}</div>
   <div class="cards">${featured.map((p, i) => card(p, i)).join("")}</div>
 </div></section>
 
@@ -275,7 +275,7 @@ pages["/interests/"] = page({
 <section class="pcb-hero">
   <div class="wrap pcb-top">
     <div class="eyebrow"><button class="label pcb-flip-btn" id="pcb-flip-btn" type="button" aria-pressed="false">Flip the board ↻</button><span class="pcb-top-go">${btn("Research and writing", "/interests/research/", { size: "sm", arrow: true })}</span></div>
-    ${heroTitle("Physics, and everything wired to it.", "wired", "kn-hero-md")}
+    ${heroTitle("The components that keep me running.", "components", "kn-hero-md")}
   </div>
   <div class="pcb-stage" id="pcb-stage" role="group" aria-label="A circuit board of interests. Pick a part to see the work wired to it."></div>
   <div class="wrap"><div class="pcb-bar" id="pcb-bar" aria-live="polite"></div></div>

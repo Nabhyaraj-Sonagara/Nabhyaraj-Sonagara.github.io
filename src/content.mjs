@@ -25,8 +25,8 @@ export const nav = [
 ];
 
 export const marquee = [
-  "30M parameters", "NumPy only", "4-bit inference", "Raspberry Pi", "chain-of-thought length",
-  "four agents, one vault", "ATLAS Open Data", "paper trading only", "Python then C++", "experimental physics", "one paper a week",
+  "30M parameters", "NumPy only", "4-bit inference", "Raspberry π", "chain-of-thought length",
+  "Agent referendum for the vibes", "ATLAS Open Data", "[insert cool ticker text]", "Python/C++", "experimental physics", "one article a week",
 ];
 
 const gh = (repo) => ({ label: "Code on GitHub", href: `https://github.com/Nabhyaraj-Sonagara/${repo}`, external: true });
@@ -67,7 +67,7 @@ export const projects = [
       ["What I built", "A tokeniser, an attention block, a training loop and an optimiser, wired into a model of about 30 million parameters. The goal was never a benchmark score. It was a model I can read from end to end and still run on hardware that fits in a pocket."],
       ["What is next", "Getting it onto a microcontroller. That needs quantization, which is how I came to write a paper about low-bit models in the first place."],
     ],
-    sheet: [["Role", "Sole author"], ["Stack", "Python, NumPy"], ["Weights", "~30M"], ["Runs on", "Raspberry Pi"], ["Status", "In progress"]],
+    sheet: [["Role", "Sole author"], ["Stack", "Python, NumPy"], ["Weights", "~30M"], ["Runs on", "Raspberry π"], ["Status", "In progress"]],
     links: [{ label: "The paper it led to", href: "/quantization-aware-reasoning-distillation/" }],
   },
   {
@@ -163,7 +163,7 @@ const ESSAY = { title: "Is the world getting uglier?", href: "https://substack.c
 export const fields = {
   core: {
     id: "physics", name: "Physics", part: "CPU", ref: "U1 · CPU",
-    text: "The centre of it all. I am heading for work as an experimental physicist, and I want to use AI to make physics more efficient and accessible than ever before. Physics gives the questions; every other part on this board is how I get at them.",
+    text: "The 'one ring to find them all and in the darkness, bind them'. I am heading for work as an experimental physicist, and I want to use AI to make experimental physics more efficient and accessible than ever before.",
     related: ["atlas-collision-predictor", "black-hole-simulator"],
   },
   nodes: [
@@ -171,7 +171,7 @@ export const fields = {
       text: "Small models written from scratch, agents that share one vault, and a paper on low-bit reasoning. It does the heavy lifting for everything else on the board.",
       related: ["tinygpt", "multi-agent-study-system", "agent-referendum", "fine-print-reader", "ostium", PAPER] },
     { id: "maths", name: "Mathematics", short: "Mathematics", part: "RAM", ref: "DIMM1",
-      text: "The third field I study, next to AI and physics, and the thing the CPU keeps reaching for. Hand-written backprop, bits per weight, light bending around a black hole: it is all maths underneath.",
+      text: "Math is physics unbound by reality (though reality is sometimes more bizarre and unintuitive). It is the foundation on which I developed my other interests (all of which require it).",
       related: ["tinygpt", "atlas-collision-predictor", PAPER] },
     { id: "writing", name: "Writing", short: "Writing", part: "SSD", ref: "M.2 · SSD1",
       text: "Where things get written down so they last. A frank commentary on life, the universe and everything on Substack, and notes on one paper a week, turned into summaries I can cite later.",
@@ -180,7 +180,7 @@ export const fields = {
       text: "How everything looks when it reaches a person. I think about design, want to work at a design firm to make an impact, and built this site on a design system of my own called Kinetic.",
       related: [ESSAY, { title: "This site's code", href: "https://github.com/Nabhyaraj-Sonagara/Nabhyaraj-Sonagara.github.io", kind: "Code" }, "lanlink"] },
     { id: "fintech", name: "Fintech", short: "Fintech", part: "PSU", ref: "PSU1",
-      text: "The fourth field I study. Trading bots trained and run on paper against Indian markets, so I learn how a strategy fails before a failure costs anything.",
+      text: "Money is a universal system of trust. Studying how markets behave intrigued me, so I created a neural network to predict market behavior and make paper trades.",
       related: ["paper-trading-bots"] },
   ],
 };

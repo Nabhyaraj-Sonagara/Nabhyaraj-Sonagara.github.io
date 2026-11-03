@@ -1,0 +1,92 @@
+{
+ "a:I am a student of AI, physics and mathematics, heading for work as an experimental physicist and AI researcher. I write artificial neural networks and decode the world with a team of AI agents, one step at a time.": {
+  "was": "I am a student of AI, physics and mathematics, heading for work as an experimental physicist and AI researcher. I write artificial neural networks and decode the world with a team of AI agents, one step at a time.",
+  "wasHtml": "I am a student of AI, physics and mathematics, heading for work as an experimental physicist and AI researcher. I write artificial neural networks and decode the world with a team of AI agents, one step at a time.",
+  "text": "Hey, I'm Nabhyaraj. I like studying physics, AI and writing opinionated articles to express myself. I am proficient in Python and am mastering C++. I also use Omarchy linux (Arch, by the way ;).",
+  "html": "Hey, I'm Nabhyaraj. I like studying physics, AI and writing opinionated articles to express myself. I am proficient in Python and am mastering C++. I also use Omarchy linux (Arch, by the way ;)."
+ },
+ "a:Getting TinyGPT onto a microcontroller.": {
+  "was": "Getting TinyGPT onto a microcontroller.",
+  "wasHtml": "Getting TinyGPT onto a microcontroller.",
+  "text": "Quantizing TinyGPT using the same methods to fit on a microcontroller",
+  "html": "Quantizing TinyGPT using the same methods to fit on a microcontroller"
+ },
+ "a:Writing a paper on why low-bit models misjudge how long to think.": {
+  "was": "Writing a paper on why low-bit models misjudge how long to think.",
+  "wasHtml": "Writing a paper on why low-bit models misjudge how long to think.",
+  "text": "Writing a paper on why low-bit models misjudge how long to think, and using a new quantization method to prevent it.",
+  "html": "Writing a paper on why low-bit models misjudge how long to think, and using a new quantization method to prevent it."
+ },
+ "a:Right now": {
+  "was": "Right now",
+  "wasHtml": "Right now",
+  "text": "Currently",
+  "html": "Currently"
+ },
+ "a:Physics is the CPU. AI, maths, writing, design and fintech are the parts wired to it.": {
+  "was": "Physics is the CPU. AI, maths, writing, design and fintech are the parts wired to it.",
+  "wasHtml": "Physics is the CPU. AI, maths, writing, design and fintech are the parts wired to it.",
+  "text": "Go to a fun visual that depicts my interests in a fun and playful way.",
+  "html": "Go to a fun visual that depicts my interests in a fun and playful way."
+ },
+ "a:Selected work": {
+  "was": "Selected work",
+  "wasHtml": "Selected work",
+  "text": "Magnum Opuses (Opi?)",
+  "html": "Magnum Opuses (Opi?)"
+ },
+ "a:Python then C++": {
+  "was": "Python then C++",
+  "wasHtml": "Python then C++",
+  "text": "Python/C++",
+  "html": "Python/C++"
+ },
+ "a:one paper a week": {
+  "was": "one paper a week",
+  "wasHtml": "one paper a week",
+  "text": "one article a week",
+  "html": "one article a week"
+ },
+ "a:Raspberry Pi": {
+  "was": "Raspberry Pi",
+  "wasHtml": "Raspberry Pi",
+  "text": "Raspberry π",
+  "html": "Raspberry π"
+ },
+ "a:four agents, one vault": {
+  "was": "four agents, one vault",
+  "wasHtml": "four agents, one vault",
+  "text": "Agent referendum for the vibes",
+  "html": "Agent referendum for the vibes"
+ },
+ "a:paper trading only": {
+  "was": "paper trading only",
+  "wasHtml": "paper trading only",
+  "text": "[insert cool ticker text]",
+  "html": "[insert cool ticker text]"
+ },
+ "a:Physics, and everything wired to it.": {
+  "was": "Physics, and everything wired to it.",
+  "wasHtml": "Physics, and everything wired to it.",
+  "text": "The components that keep me running.",
+  "html": "The components that keep me running."
+ },
+ "a:The centre of it all. I am heading for work as an experimental physicist, and I want to use AI to make physics more efficient and accessible than ever before. Physics gives the questions; every other part on this board is how I get at them.": {
+  "was": "The centre of it all. I am heading for work as an experimental physicist, and I want to use AI to make physics more efficient and accessible than ever before. Physics gives the questions; every other part on this board is how I get at them.",
+  "wasHtml": "The centre of it all. I am heading for work as an experimental physicist, and I want to use AI to make physics more efficient and accessible than ever before. Physics gives the questions; every other part on this board is how I get at them.",
+  "text": "The 'one ring to find them all and in the darkness, bind them'. I am heading for work as an experimental physicist, and I want to use AI to make experimental physics more efficient and accessible than ever before.",
+  "html": "The 'one ring to find them all and in the darkness, bind them'. I am heading for work as an experimental physicist, and I want to use AI to make experimental physics more efficient and accessible than ever before."
+ },
+ "a:The fourth field I study. Trading bots trained and run on paper against Indian markets, so I learn how a strategy fails before a failure costs anything.": {
+  "was": "The fourth field I study. Trading bots trained and run on paper against Indian markets, so I learn how a strategy fails before a failure costs anything.",
+  "wasHtml": "The fourth field I study. Trading bots trained and run on paper against Indian markets, so I learn how a strategy fails before a failure costs anything.",
+  "text": "Money is a universal system of trust. Studying how markets behave intrigued me, so I created a neural network to predict market behavior and make paper trades.",
+  "html": "Money is a universal system of trust. Studying how markets behave intrigued me, so I created a neural network to predict market behavior and make paper trades."
+ },
+ "a:The third field I study, next to AI and physics, and the thing the CPU keeps reaching for. Hand-written backprop, bits per weight, light bending around a black hole: it is all maths underneath.": {
+  "was": "The third field I study, next to AI and physics, and the thing the CPU keeps reaching for. Hand-written backprop, bits per weight, light bending around a black hole: it is all maths underneath.",
+  "wasHtml": "The third field I study, next to AI and physics, and the thing the CPU keeps reaching for. Hand-written backprop, bits per weight, light bending around a black hole: it is all maths underneath.",
+  "text": "Math is physics unbound by reality (though reality is sometimes more bizarre and unintuitive). It is the foundation on which I developed my other interests (all of which require it).",
+  "html": "Math is physics unbound by reality (though reality is sometimes more bizarre and unintuitive). It is the foundation on which I developed my other interests (all of which require it)."
+ }
+}
